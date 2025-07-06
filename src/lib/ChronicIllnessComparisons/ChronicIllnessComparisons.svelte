@@ -32,7 +32,7 @@
 	<ul>
 		{#each data as illness}
 			<li>
-				the prevalence for {illness.illness} is {illness.adultPrevalence}% and is {illness.isRareInAdults
+				the prevalence for {illness.illness} is {illness.adultPrevalence * 100}% and is {illness.isRareInAdults
 					? ''
 					: 'not'} rare
 			</li>
