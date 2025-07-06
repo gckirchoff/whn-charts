@@ -3,20 +3,24 @@
 
 	import { csv } from 'd3-fetch';
 	import { scaleLinear } from 'd3-scale';
-	import type { Student, CsvStudent, ChronicIlnessComparisonsProps } from './constants';
+	import type {
+		ChronicIlnessComparisonsProps,
+		CsvPrevalenceData,
+		PrevalenceData
+	} from './constants';
 
 	let { src }: ChronicIlnessComparisonsProps = $props();
 
-	let data = $state<Student[]>([]);
+	let data = $state<PrevalenceData[]>([]);
 
 	onMount(async () => {
-		data = await csv<Student>(src, (row) => {
-			const typedRow = row as CsvStudent;
-
+		data = await csv<PrevalenceData>(src, (row) => {
+			const typedRow = row as CsvPrevalenceData;
+			console.log('Hello', typedRow);
 			return {
 				...typedRow,
-				age: +typedRow.age,
-				height: +typedRow.height
+				adultPrevalence: Number(typedRow.adultPrevalence),
+				isRareInAdults: typedRow.isRareInAdults === 'TRUE'
 			};
 		});
 	});
@@ -26,8 +30,12 @@
 
 <div>
 	<ul>
-		{#each data as student}
-			<li>{student.name} is {student.age} years old and {student.age}cm tall</li>
+		{#each data as illness}
+			<li>
+				the prevalence for {illness.illness} is {illness.adultPrevalence}% and is {illness.isRareInAdults
+					? ''
+					: 'not'} rare
+			</li>
 		{/each}
 	</ul>
 </div>
