@@ -41,6 +41,6 @@
 	</ul>
 </div>
 
-<div style="height: 1000px">
+<div style="height: 500px">
 	<DataChart />
 </div>
