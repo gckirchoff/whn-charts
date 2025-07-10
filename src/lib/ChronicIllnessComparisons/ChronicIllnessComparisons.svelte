@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import DataChart from './DataChart/DataChart.svelte';
 
 	import { csv } from 'd3-fetch';
 	import { scaleLinear } from 'd3-scale';
@@ -38,4 +39,8 @@
 			</li>
 		{/each}
 	</ul>
+</div>
+
+<div style="height: 1000px">
+	<DataChart />
 </div>

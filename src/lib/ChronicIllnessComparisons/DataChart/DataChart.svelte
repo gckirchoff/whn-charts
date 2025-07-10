@@ -43,7 +43,7 @@
     </label>
 </div> -->
 
-<div bind:clientWidth={chartWidth}>
+<div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight}>
 	<svg width={chartWidth} height={chartHeight}>
 		<g style="transform:translate({margin.left}px, {margin.top}px)">
 			<g style="transform:translate(0, {innerChartHeight}px)">
@@ -59,5 +59,9 @@
 <style>
 	svg {
 		background-color: rgba(99, 24, 24, 0.622);
+	}
+
+	div {
+		height: 100%;
 	}
 </style>
