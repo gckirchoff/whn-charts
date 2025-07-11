@@ -1,0 +1,6 @@
+illness,adultPrevalence,isRareInAdults,adultPrevalenceSource,childPrevalence,isRareInChildren,childPrevalenceSource,totalPrevalence,isRareTotal,totalSource,relativeSearchInterest,Research References,Funding,,,
+Post Polio Syndrome,0.000220516251,TRUE,Post-Polio Syndrome | Living With Paralysis | Reeve Foundation,,,,,,,0,,,,,
+Diabetes,0.113,FALSE,https://www.cdc.gov/nchs/products/databriefs/db516.htm,,,,,,,45,,,,, 
+Cystic Fibrosis,0.00007056520032,TRUE,About Cystic Fibrosis | Cystic Fibrosis Foundation,0.00004704346688,TRUE,About Cystic Fibrosis | Cystic Fibrosis Foundation,0.0001176086672,TRUE,About Cystic Fibrosis | Cystic Fibrosis Foundation,0,,,,,
+Asthma,0.08,FALSE,https://pmc.ncbi.nlm.nih.gov/articles/PMC11262137/,0.065,FALSE,https://pmc.ncbi.nlm.nih.gov/articles/PMC11262137/,0.077,FALSE,,14,,,,,
+Long COVID,0.05,,,,,,,,,5,,,,,
