@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import * as d3 from 'd3';
+	import { scaleSqrt, scaleBand, scaleLinear, extent } from 'd3';
+	let d3 = {scaleSqrt, scaleBand, scaleLinear, extent};
 	import type {
 		ChronicIlnessComparisonsProps,
 		CsvPrevalenceData,
@@ -23,7 +24,7 @@
 	let xScale = $derived(d3.scaleBand().domain(data.map((row) => row[xProperty] as string)).range([0, innerChartWidth]));
 	let yScale = $derived(d3.scaleLinear().domain(d3.extent(data, (row) => +row[yProperty]) as [number, number]).range([innerChartHeight, 0]));
 	let yScaleLog = $derived(d3.scaleLog().domain(d3.extent(data, (row) => +row[yProperty]) as [number, number]).range([innerChartHeight, 0]));
-	let xTicks = $derived(data.map((row) => row[xProperty] as string));	
+	let xTicks = $derived(xScale.domain())	
 	let yTicks = $derived(yScale.ticks());
 
 	const colorPattern = {
