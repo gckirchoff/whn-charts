@@ -1,30 +1,33 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { scaleSqrt, scaleBand, scaleLinear, scaleLog, extent } from 'd3';
+	import { scaleBand, scaleLinear, scaleLog, extent } from 'd3';
 
-	import type {
-		ChronicIlnessComparisonsProps,
-		CsvPrevalenceData,
-		PrevalenceData
-	} from '../constants';
+	import type { DataChartProps } from './constants';
+	import { margin } from './constants';
 
-	let { data, xProperty = 'illness', yProperty = 'adultPrevalence' } = $props();
-	
-	const margin = {
-		top: 50,
-		bottom: 50,
-		left: 50,
-		right: 50
-	};
+	let { data, xProperty = 'illness', yProperty = 'adultPrevalence' }: DataChartProps = $props();
 
 	let chartWidth = $state(500);
 	let chartHeight = $state(500);
 	let innerChartWidth = $derived(chartWidth - margin.left - margin.right);
 	let innerChartHeight = $derived(chartHeight - margin.top - margin.bottom);
-	let xScale = $derived(scaleBand().domain(data.map((row) => row[xProperty] as string)).range([0, innerChartWidth]));
-	let yScale = $derived(scaleLinear().domain(extent(data, (row) => +row[yProperty]) as [number, number]).range([innerChartHeight, 0]));
-	let yScaleLog = $derived(scaleLog().domain(extent(data, (row) => +row[yProperty]) as [number, number]).range([innerChartHeight, 0]));
-	let xTicks = $derived(xScale.domain())	
+
+	let xScale = $derived(
+		scaleBand()
+			.domain(data.map((row) => row[xProperty] as string))
+			.range([0, innerChartWidth])
+	);
+	let yScale = $derived(
+		scaleLinear()
+			.domain(extent(data, (row) => +row[yProperty]) as [number, number])
+			.range([innerChartHeight, 0])
+	);
+	let yScaleLog = $derived(
+		scaleLog()
+			.domain(extent(data, (row) => +row[yProperty]) as [number, number])
+			.range([innerChartHeight, 0])
+	);
+
+	let xTicks = $derived(xScale.domain());
 	let yTicks = $derived(yScale.ticks());
 
 	const colorPattern = {
@@ -57,7 +60,9 @@
 			<g style="transform:translate(0, {innerChartHeight}px)">
 				<line x1="0" y1="0" x2={innerChartWidth} y2="0" stroke="black" stroke-width="4px" />
 				{#each xTicks as tick}
-					<text x={(xScale(tick) ?? 0) + xScale.bandwidth() / 2} y={20} text-anchor="middle">{tick}</text>
+					<text x={(xScale(tick) ?? 0) + xScale.bandwidth() / 2} y={20} text-anchor="middle">
+						{tick}
+					</text>
 				{/each}
 			</g>
 			<g>
