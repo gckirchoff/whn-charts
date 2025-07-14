@@ -77,7 +77,7 @@
 
 <style>
 	svg {
-		background-color: rgba(99, 24, 24, 0.622);
+		background-color: rgba(22, 117, 194, 0.622);
 	}
 
 	div {
