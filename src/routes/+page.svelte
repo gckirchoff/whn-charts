@@ -8,4 +8,4 @@
 
 <p>Hello from Luke!</p>
 
-<ChronicIllnessComparisons src="/dummy-data.csv" />
+<ChronicIllnessComparisons src="/disease-prevalence-data.csv" />

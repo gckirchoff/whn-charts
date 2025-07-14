@@ -4,10 +4,11 @@ export interface ChronicIlnessComparisonsProps {
 	src: string;
 }
 
-export interface Student {
-	name: string;
-	age: number;
-	height: number;
+export interface PrevalenceData {
+	illness: string;
+	adultPrevalence: number;
+	isRareInAdults: boolean;
+	adultPrevalenceSource: string;
 }
 
-export type CsvStudent = RawCsv<Student>;
+export type CsvPrevalenceData = RawCsv<PrevalenceData>;
