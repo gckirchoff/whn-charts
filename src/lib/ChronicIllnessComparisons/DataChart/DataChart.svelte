@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { scaleSqrt, scaleBand, scaleLinear, extent } from 'd3';
-	let d3 = {scaleSqrt, scaleBand, scaleLinear, extent};
+	import { scaleSqrt, scaleBand, scaleLinear, scaleLog, extent } from 'd3';
+
 	import type {
 		ChronicIlnessComparisonsProps,
 		CsvPrevalenceData,
@@ -21,9 +21,9 @@
 	let chartHeight = $state(500);
 	let innerChartWidth = $derived(chartWidth - margin.left - margin.right);
 	let innerChartHeight = $derived(chartHeight - margin.top - margin.bottom);
-	let xScale = $derived(d3.scaleBand().domain(data.map((row) => row[xProperty] as string)).range([0, innerChartWidth]));
-	let yScale = $derived(d3.scaleLinear().domain(d3.extent(data, (row) => +row[yProperty]) as [number, number]).range([innerChartHeight, 0]));
-	let yScaleLog = $derived(d3.scaleLog().domain(d3.extent(data, (row) => +row[yProperty]) as [number, number]).range([innerChartHeight, 0]));
+	let xScale = $derived(scaleBand().domain(data.map((row) => row[xProperty] as string)).range([0, innerChartWidth]));
+	let yScale = $derived(scaleLinear().domain(extent(data, (row) => +row[yProperty]) as [number, number]).range([innerChartHeight, 0]));
+	let yScaleLog = $derived(scaleLog().domain(extent(data, (row) => +row[yProperty]) as [number, number]).range([innerChartHeight, 0]));
 	let xTicks = $derived(xScale.domain())	
 	let yTicks = $derived(yScale.ticks());
 
