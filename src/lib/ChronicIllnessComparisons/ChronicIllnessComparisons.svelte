@@ -42,5 +42,5 @@
 </div>
 
 <div style="height: 500px">
-	<DataChart />
+	<DataChart {data} />
 </div>
