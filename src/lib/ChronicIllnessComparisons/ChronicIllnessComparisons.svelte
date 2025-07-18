@@ -31,7 +31,7 @@
 
 <div>
 	<label>
-		Dependent y variable
+		Dependent y variable: 
 		<select bind:value={yProperty}>
 			<option value="adultPrevalence"> adult prevalence </option>
 			<option value="relativeSearchInterest"> relative search interest</option>
