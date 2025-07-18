@@ -3,8 +3,9 @@
 
 	import type { DataChartProps } from './constants';
 	import { margin } from './constants';
+	import ChronicIllnessComparisons from '../ChronicIllnessComparisons.svelte';
 
-	let { data, xProperty = 'illness', yProperty = 'adultPrevalence' }: DataChartProps = $props();
+	let { data, xProperty = 'illness', yProperty = 'adultPrevalence'}: DataChartProps = $props();
 
 	let chartWidth = $state(500);
 	let chartHeight = $state(500);
@@ -36,30 +37,12 @@
 
 </script>
 
-<!-- <div>
-    <label>
-        Independent x variable
-        <select bind:value={xVariable}>
-            <option value= (something) ></option>
-            <option value= (something) ></option>
-            etc...
-        </select>
-    </label>
-    <label>
-        Dependent y variable
-        <select bind:value={yVariable}>
-            <option value= (something) ></option>
-            <option value= (something) ></option>
-            etc...
-        </select>
-    </label>
-</div> -->
 
 <div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight}>
 	<svg width={chartWidth} height={chartHeight}>
 		<g style="transform:translate({margin.left}px, {margin.top}px)">
 			<g style="transform:translate(0, {innerChartHeight}px)">
-				<line x1="0" y1="0" x2={innerChartWidth} y2="0" stroke="black" stroke-width="4px" />
+				<line x1="0" y1="0" x2={innerChartWidth} y2="0" stroke="black" stroke-width="5px" />
 				{#each xTicks as tick}
 					<text x={(xScale(tick) ?? 0) + xScale.bandwidth() / 2} y={20} text-anchor="middle">
 						{tick}
@@ -67,7 +50,7 @@
 				{/each}
 			</g>
 			<g>
-				<line x1="0" y1="0" x2="0" y2={innerChartHeight} stroke="black" stroke-width="4px" />
+				<line x1="0" y1="0" x2="0" y2={innerChartHeight} stroke="black" stroke-width="5px" />
 				{#each yTicks as tick}
 					<text x="-35px" y={yScale(tick)}>{tick}</text>
 				{/each}
@@ -96,7 +79,7 @@
 
 <style>
 	svg {
-		background-color: rgba(99, 24, 24, 0.622);
+		background-color: rgba(22, 117, 194, 0.622);
 	}
 
 	div {

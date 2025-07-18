@@ -2,7 +2,7 @@ import type { PrevalenceData } from '../constants';
 
 export interface DataChartProps {
 	data: PrevalenceData[];
-	xProperty?: keyof PrevalenceData;
+	xProperty: keyof PrevalenceData;
 	yProperty?: keyof PrevalenceData;
 }
 
