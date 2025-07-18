@@ -3,7 +3,6 @@
 	import DataChart from './DataChart/DataChart.svelte';
 
 	import { csv } from 'd3-fetch';
-	import { scaleLinear } from 'd3-scale';
 	import type {
 		ChronicIlnessComparisonsProps,
 		CsvPrevalenceData,
