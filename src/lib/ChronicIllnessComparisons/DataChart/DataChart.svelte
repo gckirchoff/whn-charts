@@ -73,8 +73,8 @@
 			</g>
 			{#each data as row (row[xProperty])}
 				<rect
-					x={(xScale(String(row[xProperty])) ?? 0) + 20}
-					y = {yScale(+row[yProperty]) - 2}
+					x = {(xScale(String(row[xProperty])) ?? 0)}
+					y = {yScale(+row[yProperty])}
 					width = {xScale.bandwidth() - 40}
 					height = {innerChartHeight - yScale(+row[yProperty])}
 					fill = {colorPattern(String(row[xProperty]))}
