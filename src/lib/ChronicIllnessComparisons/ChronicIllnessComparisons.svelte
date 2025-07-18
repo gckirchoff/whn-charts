@@ -11,6 +11,8 @@
 
 	let { src }: ChronicIlnessComparisonsProps = $props();
 
+	let xProperty = $state('illness');
+	let yProperty = $state<keyof PrevalenceData>('adultPrevalence');
 	let data = $state<PrevalenceData[]>([]);
 
 	onMount(async () => {
@@ -20,26 +22,23 @@
 			return {
 				...typedRow,
 				adultPrevalence: Number(typedRow.adultPrevalence),
+				relativeSearchInterest: Number(typedRow.relativeSearchInterest),
 				isRareInAdults: typedRow.isRareInAdults === 'TRUE'
 			};
 		});
 	});
-
-	// $inspect(data);
 </script>
 
 <div>
-	<ul>
-		{#each data as illness}
-			<li>
-				the prevalence for {illness.illness} is {illness.adultPrevalence * 100}% and is {illness.isRareInAdults
-					? ''
-					: 'not'} rare
-			</li>
-		{/each}
-	</ul>
+	<label>
+		Dependent y variable
+		<select bind:value={yProperty}>
+			<option value="adultPrevalence"> adult prevalence </option>
+			<option value="relativeSearchInterest"> relative search interest</option>
+		</select>
+	</label>
 </div>
 
 <div style="height: 500px">
-	<DataChart {data} />
+	<DataChart {data} xProperty="illness" {yProperty} />
 </div>
