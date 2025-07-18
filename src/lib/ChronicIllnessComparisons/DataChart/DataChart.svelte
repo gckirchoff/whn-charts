@@ -15,6 +15,7 @@
 		scaleBand()
 			.domain(data.map((row) => row[xProperty] as string))
 			.range([0, innerChartWidth])
+			.padding(0.15)
 	);
 	let yScale = $derived(
 		scaleLinear()
@@ -75,7 +76,7 @@
 				<rect
 					x = {(xScale(String(row[xProperty])) ?? 0)}
 					y = {yScale(+row[yProperty])}
-					width = {xScale.bandwidth() - 40}
+					width = {xScale.bandwidth()}
 					height = {innerChartHeight - yScale(+row[yProperty])}
 					fill = {colorPattern(String(row[xProperty]))}
 				/>
