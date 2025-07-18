@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { scaleBand, scaleLinear, scaleLog, extent } from 'd3';
+	import { scaleBand, scaleLinear, scaleLog, extent, schemeSet1, scaleOrdinal } from 'd3';
 
 	import type { DataChartProps } from './constants';
 	import { margin } from './constants';
@@ -30,9 +30,9 @@
 	let xTicks = $derived(xScale.domain());
 	let yTicks = $derived(yScale.ticks());
 
-	const colorPattern = {
-		/// fill this when needed
-	};
+	const colorPattern = scaleOrdinal(schemeSet1);
+
+
 </script>
 
 <!-- <div>
@@ -71,6 +71,24 @@
 					<text x="-35px" y={yScale(tick)}>{tick}</text>
 				{/each}
 			</g>
+			{#each data as row (row[xProperty])}
+				<rect
+					x={(xScale(String(row[xProperty])) ?? 0) + 20}
+					y = {yScale(+row[yProperty]) - 2}
+					width = {xScale.bandwidth() - 40}
+					height = {innerChartHeight - yScale(+row[yProperty])}
+					fill = {colorPattern(String(row[xProperty]))}
+				/>
+				<text
+					x = {(xScale(String(row[xProperty])) ?? 0) + xScale.bandwidth() / 2}
+					y = {yScale(+row[yProperty]) - 5}
+					text-anchor = "middle"
+					font-size = "16"
+					font-weight = "Bold"
+					font-family = "Arial">
+					{parseFloat((+row[yProperty]).toFixed(6))}
+				</text>
+			{/each}
 		</g>
 	</svg>
 </div>
