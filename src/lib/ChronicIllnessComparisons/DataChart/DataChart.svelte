@@ -5,7 +5,7 @@
 	import { margin } from './constants';
 	import ChronicIllnessComparisons from '../ChronicIllnessComparisons.svelte';
 
-	let { data, xProperty = 'illness', yProperty = 'adultPrevalence'}: DataChartProps = $props();
+	let { data, xProperty = 'illness', yProperty = 'adultPrevalence' }: DataChartProps = $props();
 
 	let chartWidth = $state(500);
 	let chartHeight = $state(500);
@@ -33,10 +33,7 @@
 	let yTicks = $derived(yScale.ticks());
 
 	const colorPattern = scaleOrdinal(schemeSet1);
-
-
 </script>
-
 
 <div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight}>
 	<svg width={chartWidth} height={chartHeight}>
@@ -57,31 +54,32 @@
 			</g>
 			{#each data as row (row[xProperty])}
 				<rect
-					x = {(xScale(String(row[xProperty])) ?? 0)}
-					y = {yScale(+row[yProperty])}
-					width = {xScale.bandwidth()}
-					height = {innerChartHeight - yScale(+row[yProperty])}
-					fill = {colorPattern(String(row[xProperty]))}
+					x={xScale(String(row[xProperty])) ?? 0}
+					y={yScale(+row[yProperty])}
+					width={xScale.bandwidth()}
+					height={innerChartHeight - yScale(+row[yProperty])}
+					fill={colorPattern(String(row[xProperty]))}
 				/>
+				{@const value = parseFloat((+row[yProperty]).toFixed(6))}
 				<text
-					x = {(xScale(String(row[xProperty])) ?? 0) + xScale.bandwidth() / 2}
-					y = {yScale(+row[yProperty]) - 5}
-					text-anchor = "middle"
-					font-size = "16"
-					font-weight = "Bold"
-					font-family = "Arial">
-					{parseFloat((+row[yProperty]).toFixed(6))}
+					x={(xScale(String(row[xProperty])) ?? 0) + xScale.bandwidth() / 2}
+					y={yScale(+row[yProperty]) - 5}
+					text-anchor="middle"
+					font-size="16"
+					font-weight="Bold"
+					font-family="Arial"
+				>
+					{value}{value > 0.006 ? '*' : ''}
 				</text>
 			{/each}
+			<text x={innerChartWidth} y={innerChartHeight + 40} text-anchor="end">
+				* denotes common illnesses
+			</text>
 		</g>
 	</svg>
 </div>
 
 <style>
-	svg {
-		background-color: rgba(22, 117, 194, 0.622);
-	}
-
 	div {
 		height: 100%;
 	}
