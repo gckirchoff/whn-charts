@@ -3,6 +3,7 @@
 
 	import type { DataChartProps } from './constants';
 	import { margin } from './constants';
+	import ChronicIllnessComparisons from '../ChronicIllnessComparisons.svelte';
 
 	let { data, xProperty = 'illness', yProperty = 'adultPrevalence' }: DataChartProps = $props();
 
@@ -32,34 +33,13 @@
 	let yTicks = $derived(yScale.ticks());
 
 	const colorPattern = scaleOrdinal(schemeSet1);
-
-
 </script>
-
-<!-- <div>
-    <label>
-        Independent x variable
-        <select bind:value={xVariable}>
-            <option value= (something) ></option>
-            <option value= (something) ></option>
-            etc...
-        </select>
-    </label>
-    <label>
-        Dependent y variable
-        <select bind:value={yVariable}>
-            <option value= (something) ></option>
-            <option value= (something) ></option>
-            etc...
-        </select>
-    </label>
-</div> -->
 
 <div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight}>
 	<svg width={chartWidth} height={chartHeight}>
 		<g style="transform:translate({margin.left}px, {margin.top}px)">
 			<g style="transform:translate(0, {innerChartHeight}px)">
-				<line x1="0" y1="0" x2={innerChartWidth} y2="0" stroke="black" stroke-width="4px" />
+				<line x1="0" y1="0" x2={innerChartWidth} y2="0" stroke="black" stroke-width="5px" />
 				{#each xTicks as tick}
 					<text x={(xScale(tick) ?? 0) + xScale.bandwidth() / 2} y={20} text-anchor="middle">
 						{tick}
@@ -67,38 +47,39 @@
 				{/each}
 			</g>
 			<g>
-				<line x1="0" y1="0" x2="0" y2={innerChartHeight} stroke="black" stroke-width="4px" />
+				<line x1="0" y1="0" x2="0" y2={innerChartHeight} stroke="black" stroke-width="5px" />
 				{#each yTicks as tick}
 					<text x="-35px" y={yScale(tick)}>{tick}</text>
 				{/each}
 			</g>
 			{#each data as row (row[xProperty])}
 				<rect
-					x = {(xScale(String(row[xProperty])) ?? 0)}
-					y = {yScale(+row[yProperty])}
-					width = {xScale.bandwidth()}
-					height = {innerChartHeight - yScale(+row[yProperty])}
-					fill = {colorPattern(String(row[xProperty]))}
+					x={xScale(String(row[xProperty])) ?? 0}
+					y={yScale(+row[yProperty])}
+					width={xScale.bandwidth()}
+					height={innerChartHeight - yScale(+row[yProperty])}
+					fill={colorPattern(String(row[xProperty]))}
 				/>
+				{@const value = parseFloat((+row[yProperty]).toFixed(6))}
 				<text
-					x = {(xScale(String(row[xProperty])) ?? 0) + xScale.bandwidth() / 2}
-					y = {yScale(+row[yProperty]) - 5}
-					text-anchor = "middle"
-					font-size = "16"
-					font-weight = "Bold"
-					font-family = "Arial">
-					{parseFloat((+row[yProperty]).toFixed(6))}
+					x={(xScale(String(row[xProperty])) ?? 0) + xScale.bandwidth() / 2}
+					y={yScale(+row[yProperty]) - 5}
+					text-anchor="middle"
+					font-size="16"
+					font-weight="Bold"
+					font-family="Arial"
+				>
+					{value}{value > 0.006 ? '*' : ''}
 				</text>
 			{/each}
+			<text x={innerChartWidth} y={innerChartHeight + 40} text-anchor="end">
+				* denotes common illnesses
+			</text>
 		</g>
 	</svg>
 </div>
 
 <style>
-	svg {
-		background-color: rgba(99, 24, 24, 0.622);
-	}
-
 	div {
 		height: 100%;
 	}
