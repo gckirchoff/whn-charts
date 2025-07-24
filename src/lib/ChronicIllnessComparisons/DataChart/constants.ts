@@ -8,7 +8,7 @@ export interface DataChartProps {
 
 export const margin = {
 	top: 50,
-	bottom: 50,
+	bottom: 200,
 	left: 50,
 	right: 50
 };

@@ -8,6 +8,7 @@
 		CsvPrevalenceData,
 		PrevalenceData
 	} from './constants';
+	import { interpolateSpectral } from 'd3';
 
 	let { src }: ChronicIlnessComparisonsProps = $props();
 
@@ -23,10 +24,13 @@
 				...typedRow,
 				adultPrevalence: Number(typedRow.adultPrevalence),
 				relativeSearchInterest: Number(typedRow.relativeSearchInterest),
-				isRareInAdults: typedRow.isRareInAdults === 'TRUE'
+				isRareInAdults: typedRow.isRareInAdults === 'TRUE',
+				isPreventable: typedRow.isPreventable === 'TRUE',
 			};
 		});
 	});
+
+$inspect(data)
 </script>
 
 <div>

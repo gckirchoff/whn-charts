@@ -10,6 +10,7 @@ export interface PrevalenceData {
 	isRareInAdults: boolean;
 	adultPrevalenceSource: string;
 	relativeSearchInterest: number;
+	isPreventable: boolean;
 }
 
 export type CsvPrevalenceData = RawCsv<PrevalenceData>;

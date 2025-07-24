@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { scaleBand, scaleLinear, scaleLog, extent, schemeSet1, scaleOrdinal } from 'd3';
+	import { scaleBand, scaleLinear, scaleLog, extent } from 'd3';
 
 	import type { DataChartProps } from './constants';
 	import { margin } from './constants';
@@ -11,6 +11,9 @@
 	let chartHeight = $state(500);
 	let innerChartWidth = $derived(chartWidth - margin.left - margin.right);
 	let innerChartHeight = $derived(chartHeight - margin.top - margin.bottom);
+	
+	let preventableColor = 'DarkGreen'
+	let nonPreventableColor = 'DarkRed'
 
 	let xScale = $derived(
 		scaleBand()
@@ -31,23 +34,23 @@
 
 	let xTicks = $derived(xScale.domain());
 	let yTicks = $derived(yScale.ticks());
-
-	const colorPattern = scaleOrdinal(schemeSet1);
 </script>
 
 <div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight}>
 	<svg width={chartWidth} height={chartHeight}>
 		<g style="transform:translate({margin.left}px, {margin.top}px)">
 			<g style="transform:translate(0, {innerChartHeight}px)">
-				<line x1="0" y1="0" x2={innerChartWidth} y2="0" stroke="black" stroke-width="5px" />
+				<line x1="0" y1="0" x2={innerChartWidth} y2="0" stroke="black" stroke-width="1px" />
 				{#each xTicks as tick}
-					<text x={(xScale(tick) ?? 0) + xScale.bandwidth() / 2} y={20} text-anchor="middle">
-						{tick}
-					</text>
+					<g style="transform: translate({(xScale(tick) ?? 0) + xScale.bandwidth() / 2}px, 0) rotate(45deg) translate(0, 25px);">
+						<text text-anchor="start">
+							{tick}
+						</text>
+					</g>
 				{/each}
 			</g>
 			<g>
-				<line x1="0" y1="0" x2="0" y2={innerChartHeight} stroke="black" stroke-width="5px" />
+				<line x1="0" y1="0" x2="0" y2={innerChartHeight} stroke="black" stroke-width="1px" />
 				{#each yTicks as tick}
 					<text x="-35px" y={yScale(tick)}>{tick}</text>
 				{/each}
@@ -58,29 +61,50 @@
 					y={yScale(+row[yProperty])}
 					width={xScale.bandwidth()}
 					height={innerChartHeight - yScale(+row[yProperty])}
-					fill={colorPattern(String(row[xProperty]))}
+					fill={row.isPreventable? preventableColor : nonPreventableColor}
 				/>
 				{@const value = parseFloat((+row[yProperty]).toFixed(6))}
 				<text
 					x={(xScale(String(row[xProperty])) ?? 0) + xScale.bandwidth() / 2}
 					y={yScale(+row[yProperty]) - 5}
 					text-anchor="middle"
-					font-size="16"
+					font-size="15"
 					font-weight="Bold"
 					font-family="Arial"
+					fill={row.isPreventable? preventableColor : nonPreventableColor}
 				>
 					{value}{value > 0.006 ? '*' : ''}
 				</text>
 			{/each}
-			<text x={innerChartWidth} y={innerChartHeight + 40} text-anchor="end">
+			<text x={innerChartWidth} y={innerChartHeight + 135} text-anchor="end">
 				* denotes common illnesses
 			</text>
+			<text x={innerChartWidth} y={0} text-anchor = "end">
+				: non-preventable
+			</text>
+			<text x={innerChartWidth} y={20} text-anchor = "end">
+				: preventable
+			</text>
+			<rect 
+				x={innerChartWidth-140}
+				y={-12}
+				width={25}
+				height={16}
+				fill={nonPreventableColor}
+			/>
+			<rect 
+				x={innerChartWidth-110}
+				y={8}
+				width={25}
+				height={16}
+				fill={preventableColor}
+			/>
 		</g>
 	</svg>
 </div>
 
 <style>
 	div {
-		height: 100%;
+		height: 125%;
 	}
 </style>
