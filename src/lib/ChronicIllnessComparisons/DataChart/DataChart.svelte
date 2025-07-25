@@ -2,7 +2,7 @@
 	import { scaleBand, scaleLinear, scaleLog, extent } from 'd3';
 
 	import type { DataChartProps } from './constants';
-	import { margin } from './constants';
+	import { margin, rarityThreshold } from './constants';
 	import ChronicIllnessComparisons from '../ChronicIllnessComparisons.svelte';
 
 	let { data, xProperty = 'illness', yProperty = 'adultPrevalence' }: DataChartProps = $props();
@@ -73,7 +73,7 @@
 					font-family="Arial"
 					fill={row.isPreventable? preventableColor : nonPreventableColor}
 				>
-					{value}{value > 0.006 ? '*' : ''}
+					{value}{value > rarityThreshold ? '*' : ''}
 				</text>
 			{/each}
 			<text x={innerChartWidth} y={innerChartHeight + 135} text-anchor="end">

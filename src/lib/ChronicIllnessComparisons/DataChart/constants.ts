@@ -12,3 +12,5 @@ export const margin = {
 	left: 50,
 	right: 50
 };
+
+export const rarityThreshold = 200000/340110988
