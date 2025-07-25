@@ -8,7 +8,6 @@
 		CsvPrevalenceData,
 		PrevalenceData
 	} from './constants';
-	import { interpolateSpectral } from 'd3';
 
 	let { src }: ChronicIlnessComparisonsProps = $props();
 
@@ -29,8 +28,6 @@
 			};
 		});
 	});
-
-$inspect(data)
 </script>
 
 <div>
@@ -43,6 +40,6 @@ $inspect(data)
 	</label>
 </div>
 
-<div style="height: 500px">
+<div style="height: 700px">
 	<DataChart {data} xProperty="illness" {yProperty} />
 </div>

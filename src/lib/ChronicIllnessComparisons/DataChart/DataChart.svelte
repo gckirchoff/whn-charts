@@ -11,9 +11,9 @@
 	let chartHeight = $state(500);
 	let innerChartWidth = $derived(chartWidth - margin.left - margin.right);
 	let innerChartHeight = $derived(chartHeight - margin.top - margin.bottom);
-	
-	let preventableColor = 'DarkGreen'
-	let nonPreventableColor = 'DarkRed'
+
+	let preventableColor = 'DarkGreen';
+	let nonPreventableColor = 'DarkRed';
 
 	let xScale = $derived(
 		scaleBand()
@@ -42,7 +42,10 @@
 			<g style="transform:translate(0, {innerChartHeight}px)">
 				<line x1="0" y1="0" x2={innerChartWidth} y2="0" stroke="black" stroke-width="1px" />
 				{#each xTicks as tick}
-					<g style="transform: translate({(xScale(tick) ?? 0) + xScale.bandwidth() / 2}px, 0) rotate(45deg) translate(0, 25px);">
+					<g
+						style="transform: translate({(xScale(tick) ?? 0) +
+							xScale.bandwidth() / 2}px, 0) rotate(45deg) translate(0, 25px);"
+					>
 						<text text-anchor="start">
 							{tick}
 						</text>
@@ -61,7 +64,7 @@
 					y={yScale(+row[yProperty])}
 					width={xScale.bandwidth()}
 					height={innerChartHeight - yScale(+row[yProperty])}
-					fill={row.isPreventable? preventableColor : nonPreventableColor}
+					fill={row.isPreventable ? preventableColor : nonPreventableColor}
 				/>
 				{@const value = parseFloat((+row[yProperty]).toFixed(6))}
 				<text
@@ -71,7 +74,7 @@
 					font-size="15"
 					font-weight="Bold"
 					font-family="Arial"
-					fill={row.isPreventable? preventableColor : nonPreventableColor}
+					fill={row.isPreventable ? preventableColor : nonPreventableColor}
 				>
 					{value}{value > rarityThreshold ? '*' : ''}
 				</text>
@@ -79,32 +82,16 @@
 			<text x={innerChartWidth} y={innerChartHeight + 135} text-anchor="end">
 				* denotes common illnesses
 			</text>
-			<text x={innerChartWidth} y={0} text-anchor = "end">
-				: non-preventable
-			</text>
-			<text x={innerChartWidth} y={20} text-anchor = "end">
-				: preventable
-			</text>
-			<rect 
-				x={innerChartWidth-140}
-				y={-12}
-				width={25}
-				height={16}
-				fill={nonPreventableColor}
-			/>
-			<rect 
-				x={innerChartWidth-110}
-				y={8}
-				width={25}
-				height={16}
-				fill={preventableColor}
-			/>
+			<text x={innerChartWidth} y={0} text-anchor="end"> : non-preventable </text>
+			<text x={innerChartWidth} y={20} text-anchor="end"> : preventable </text>
+			<rect x={innerChartWidth - 140} y={-12} width={25} height={16} fill={nonPreventableColor} />
+			<rect x={innerChartWidth - 110} y={8} width={25} height={16} fill={preventableColor} />
 		</g>
 	</svg>
 </div>
 
 <style>
 	div {
-		height: 125%;
+		height: 100%;
 	}
 </style>
