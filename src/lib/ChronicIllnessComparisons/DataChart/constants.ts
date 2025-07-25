@@ -13,4 +13,6 @@ export const margin = {
 	right: 50
 };
 
-export const rarityThreshold = 200000/340110988
+const rareIllnessUpperPopulationLimit = 200000;
+const americaPopulation = 340110988;
+export const rarityThreshold = rareIllnessUpperPopulationLimit / americaPopulation;
