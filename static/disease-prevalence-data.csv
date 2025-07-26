@@ -1,4 +1,4 @@
-illness,preventability,adultPrevalence,adultPrevalenceDescription,isRareInAdults,adultPrevalenceSource,childPrevalence,isRareInChildren,childPrevalenceSource,totalPrevalence,isRareTotal,totalSource,relativeSearchInterest,researchReferences,Funding,,,
+illness,isPreventable,adultPrevalence,adultPrevalenceDescription,isRareInAdults,adultPrevalenceSource,childPrevalence,isRareInChildren,childPrevalenceSource,totalPrevalence,isRareTotal,totalSource,relativeSearchInterest,researchReferences,Funding,,,
 Post Polio Syndrome,TRUE,0.000220516251,,TRUE,Post-Polio Syndrome | Living With Paralysis | Reeve Foundation,,,,,,,1,,,,,
 Diabetes,TRUE,0.113,,FALSE,https://www.cdc.gov/nchs/products/databriefs/db516.htm,,,,,,,52,,,,, 
 Cystic Fibrosis,FALSE,0.00007056520032,,TRUE,About Cystic Fibrosis | Cystic Fibrosis Foundation,0.00004704346688,TRUE,About Cystic Fibrosis | Cystic Fibrosis Foundation,0.0001176086672,TRUE,About Cystic Fibrosis | Cystic Fibrosis Foundation,2,,,,,
