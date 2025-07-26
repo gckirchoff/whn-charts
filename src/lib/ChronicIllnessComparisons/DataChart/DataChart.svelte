@@ -44,7 +44,7 @@
 				{#each xTicks as tick}
 					<g
 						style="transform: translate({(xScale(tick) ?? 0) +
-							xScale.bandwidth() / 2}px, 0) rotate(45deg) translate(0, 25px);"
+							xScale.bandwidth() / 2}px, 0) rotate(35deg) translate(0, 25px);"
 					>
 						<text text-anchor="start">
 							{tick}
@@ -76,7 +76,7 @@
 					font-family="Arial"
 					fill={row.isPreventable ? preventableColor : nonPreventableColor}
 				>
-					{value}{value > rarityThreshold ? '*' : ''}
+					{value}{row.adultPrevalence > rarityThreshold ? '*' : ''}
 				</text>
 			{/each}
 			<text x={innerChartWidth} y={innerChartHeight + 135} text-anchor="end">
