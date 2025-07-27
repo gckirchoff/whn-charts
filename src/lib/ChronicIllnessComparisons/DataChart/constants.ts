@@ -8,7 +8,11 @@ export interface DataChartProps {
 
 export const margin = {
 	top: 50,
-	bottom: 50,
+	bottom: 200,
 	left: 50,
 	right: 50
 };
+
+const rareIllnessUpperPopulationLimit = 200000;
+const americaPopulation = 340110988;
+export const rarityThreshold = rareIllnessUpperPopulationLimit / americaPopulation;

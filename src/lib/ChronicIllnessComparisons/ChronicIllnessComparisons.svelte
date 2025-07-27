@@ -23,7 +23,8 @@
 				...typedRow,
 				adultPrevalence: Number(typedRow.adultPrevalence),
 				relativeSearchInterest: Number(typedRow.relativeSearchInterest),
-				isRareInAdults: typedRow.isRareInAdults === 'TRUE'
+				isRareInAdults: typedRow.isRareInAdults === 'TRUE',
+				isPreventable: typedRow.isPreventable === 'TRUE',
 			};
 		});
 	});
@@ -39,6 +40,6 @@
 	</label>
 </div>
 
-<div style="height: 500px">
+<div style="height: 700px">
 	<DataChart {data} xProperty="illness" {yProperty} />
 </div>
