@@ -76,11 +76,11 @@
 					font-family="Arial"
 					fill={row.isPreventable ? preventableColor : nonPreventableColor}
 				>
-					{value}{row.adultPrevalence > rarityThreshold ? '*' : ''}
+					{value}{row.adultPrevalence < rarityThreshold ? '*' : ''}
 				</text>
 			{/each}
 			<text x={innerChartWidth} y={innerChartHeight + 135} text-anchor="end">
-				* denotes common illnesses
+				* denotes rare illnesses
 			</text>
 			<text x={innerChartWidth} y={0} text-anchor="end"> : non-preventable </text>
 			<text x={innerChartWidth} y={20} text-anchor="end"> : preventable </text>
