@@ -108,7 +108,7 @@
 					fill={row.isPreventable ? '#089744' : '#ee1d7f'}
 					font-size={xScale.bandwidth() / 4.5}
 				>
-					{value}{row.adultPrevalence > rarityThreshold ? '*' : ''}
+					{value}{row.adultPrevalence < rarityThreshold ? '*' : ''}
 				</text>
 			{/each}
 			<text x={innerChartWidth} y={innerChartHeight + 135} text-anchor="end" font-family='Tahoma'>
