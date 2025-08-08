@@ -4,6 +4,7 @@
 	import type { DataChartProps } from './constants';
 	import { margin, rarityThreshold } from './constants';
 	import ChronicIllnessComparisons from '../ChronicIllnessComparisons.svelte';
+	import { fade } from 'svelte/transition';
 
 	let { data, xProperty = 'illness', yProperty = 'adultPrevalence' }: DataChartProps = $props();
 
@@ -61,7 +62,6 @@
 				{/each}
 			</g>
 			<g>
-				<line x1="0" y1="0" x2="0" y2={innerChartHeight} stroke="#cccccc" stroke-width="1px" />
 				{#each yTicks as tick}
 					<text x="-35px" y={yScale(tick)} font-family='Tahoma'>{tick}</text>
 				{/each}
@@ -99,25 +99,28 @@
 				/>
 				{/if}
 				{@const value = parseFloat((+row[yProperty]).toFixed(6))}
-				<text
-					x={(xScale(String(row[xProperty])) ?? 0) + xScale.bandwidth() / 2}
-					y={yScale(+row[yProperty]) - 5}
-					text-anchor="middle"
-					font-weight="Bold"
-					font-family="Arial"
-					fill={row.isPreventable ? '#089744' : '#ee1d7f'}
-					font-size={xScale.bandwidth() / 4.5}
-				>
-					{value}{row.adultPrevalence > rarityThreshold ? '*' : ''}
-				</text>
+				{#key value}
+					<text
+						in:fade={{delay: 300}}
+						x={(xScale(String(row[xProperty])) ?? 0) + xScale.bandwidth() / 2}
+						y={yScale(+row[yProperty]) - 5}
+						text-anchor="middle"
+						font-weight="Bold"
+						font-family="Arial"
+						fill={row.isPreventable ? '#089744' : '#ee1d7f'}
+						font-size={xScale.bandwidth() / 4.5}
+					>
+					{value}{row.adultPrevalence < rarityThreshold ? '*' : ''}
+					</text>
+				{/key}
 			{/each}
 			<text x={innerChartWidth} y={innerChartHeight + 135} text-anchor="end" font-family='Tahoma'>
 				* denotes common illnesses
 			</text>
 			<text x={innerChartWidth} y={-30} text-anchor="end" font-family='Tahoma'> : non-preventable </text>
 			<text x={innerChartWidth} y={-10} text-anchor="end" font-family='Tahoma'> : preventable </text>
-			<rect x={innerChartWidth - 140} y={-42} width={25} height={16} fill={'url(#nonPreventableGradient)'} />
-			<rect x={innerChartWidth - 110} y={-22} width={25} height={16} fill={'url(#preventableGradient)'} />
+			<rect x={innerChartWidth - 152} y={-42} width={25} height={16} fill={'url(#nonPreventableGradient)'} />
+			<rect x={innerChartWidth - 120} y={-22} width={25} height={16} fill={'url(#preventableGradient)'} />
 		</g>
 	</svg>
 </div>
@@ -130,5 +133,9 @@
 	#main {
 		background-color: #f9f9f9;
 		border-radius: 20px;
+	}
+
+	path {
+		transition: all 500ms ease;
 	}
 </style>
