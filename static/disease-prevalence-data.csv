@@ -6,7 +6,7 @@ Asthma,FALSE,0.08,,FALSE,https://pmc.ncbi.nlm.nih.gov/articles/PMC11262137/,0.06
 Long COVID,TRUE,0.05,,FALSE,,,,,,,,6,,,,,
 Arthritis,FALSE,0.263,,FALSE,https://www.cdc.gov/brfss/brfssprevalence/index.html,,,,,,,27,,,,,
 COPD,TRUE,0.064,,FALSE,https://www.cdc.gov/brfss/brfssprevalence/index.html,,,,,,,12,,,,,
-Cardiovascular Disease,TRUE,0.063,Respondents that have ever reported having coronary heart disease or myocardial infarction (2023),FALSE,https://www.cdc.gov/brfss/brfssprevalence/index.html,,,,,,,1,,,,,
+Cardiovascular Disease,TRUE,0.063,Respondents that have ever reported having coronary heart disease or myocardial infarction (2023),FALSE,https://www.cdc.gov/brfss/brfssprevalence/index.html,,,,,,,5,,,,,
 Depression,FALSE,0.05,,FALSE,https://www.cdc.gov/nchs/fastats/depression.htm,,,,,,,34,,,,,
 Kidney Disease,TRUE,0.037,,FALSE,https://www.cdc.gov/brfss/brfssprevalence/index.html,,,,,,,9,,,,,
 Vision Loss,FALSE,0.02153037089,Best correct visual acuity 20/40 or worse,FALSE,https://www.cdc.gov/vision-health-data/prevalence-estimates/vision-loss-prevalence.html,,,,,,,1,,,,,
