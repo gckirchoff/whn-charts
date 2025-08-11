@@ -14,3 +14,14 @@ export interface PrevalenceData {
 }
 
 export type CsvPrevalenceData = RawCsv<PrevalenceData>;
+
+export const options = [
+	{
+		value: 'adultPrevalence',
+		label: 'Prevalence'
+	},
+	{
+		value: 'relativeSearchInterest',
+		label: 'Search Interest'
+	}
+];

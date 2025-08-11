@@ -1,19 +1,8 @@
 <script lang="ts">
-	import {
-		schemeCategory10,
-		scaleOrdinal,
-		scaleBand,
-		scaleLinear,
-		scaleLog,
-		extent,
-		schemeGreys,
-		max,
-		randomWeibull
-	} from 'd3';
+	import { schemeCategory10, scaleOrdinal, scaleBand, scaleLinear, extent } from 'd3';
 
 	import type { DataChartProps } from './constants';
 	import { margin, rarityThreshold } from './constants';
-	import ChronicIllnessComparisons from '../ChronicIllnessComparisons.svelte';
 	import { fade } from 'svelte/transition';
 
 	let { data, xProperty = 'illness', yProperty = 'adultPrevalence' }: DataChartProps = $props();
@@ -34,11 +23,7 @@
 			.domain(extent(data, (row) => +row[yProperty]) as [number, number])
 			.range([innerChartHeight, 0])
 	);
-	// let yScaleLog = $derived(
-	// 	scaleLog()
-	// 		.domain(extent(data, (row) => +row[yProperty]) as [number, number])
-	// 		.range([innerChartHeight, 0])
-	// );
+
 	let colorScale = $derived(
 		scaleOrdinal<string, string>()
 			.domain([...new Set(data.map(({ illness }) => illness))])
@@ -51,17 +36,6 @@
 
 <div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight} id="main">
 	<svg width={chartWidth} height={chartHeight}>
-		<defs>
-			<!-- <linearGradient id='preventableGradient' x1="0" y1="0" x2="0" y2="1">
-			<stop offset="0%" stop-color='' />
-			<stop offset="100%" stop-color='' />
-			</linearGradient>
-			
-			<linearGradient id='nonPreventableGradient' x1="0" y1="0" x2="0" y2="1">
-			<stop offset="0%" stop-color='' />
-			<stop offset="100%" stop-color='' />
-			</linearGradient> -->
-		</defs>
 		<g style="transform:translate({margin.left}px, {margin.top}px)">
 			<g style="transform:translate(0, {innerChartHeight}px)">
 				<line x1="0" y1="0" x2={innerChartWidth} y2="0" /> /**stroke="black" stroke-width="1px" */
@@ -130,13 +104,6 @@
 					</text>
 				{/key}
 			{/each}
-			<!-- <text x={innerChartWidth} y={innerChartHeight + 135} text-anchor="end" font-family='Tahoma'>
-				* denotes common illnesses
-			</text> -->
-			<!-- <text x={innerChartWidth} y={-30} text-anchor="end" font-family='Tahoma'> : non-preventable </text>
-			<text x={innerChartWidth} y={-10} text-anchor="end" font-family='Tahoma'> : preventable </text>
-			<rect x={innerChartWidth - 152} y={-42} width={25} height={16} fill={'url(#nonPreventableGradient)'} />
-			<rect x={innerChartWidth - 120} y={-22} width={25} height={16} fill={'url(#preventableGradient)'} /> -->
 		</g>
 	</svg>
 </div>
