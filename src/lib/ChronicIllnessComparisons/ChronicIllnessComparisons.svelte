@@ -19,7 +19,6 @@
 	let ratioed = $state(false);
 	const isRare = (prevalence: number) => prevalence < rarityThreshold;
 
-
 	let ratioData = $derived(() => {
 		if (!ratioed) return data;
 		return data.map((row) => {
@@ -29,12 +28,12 @@
 			if (yProperty === 'adultPrevalence') {
 				return {
 					...row,
-					adultPrevalence: ((prev * 100) / search).toFixed(4),
+					adultPrevalence: ((prev * 100) / search).toFixed(4)
 				};
 			} else {
 				return {
 					...row,
-					relativeSearchInterest: (search / (prev * 100)).toFixed(4),
+					relativeSearchInterest: (search / (prev * 100)).toFixed(4)
 				};
 			}
 		});
@@ -49,7 +48,7 @@
 				adultPrevalence: Number(typedRow.adultPrevalence),
 				relativeSearchInterest: Number(typedRow.relativeSearchInterest),
 				isRareInAdults: typedRow.isRareInAdults === 'TRUE',
-				isPreventable: typedRow.isPreventable === 'TRUE',
+				isPreventable: typedRow.isPreventable === 'TRUE'
 			};
 		});
 		data = csvData
@@ -73,16 +72,28 @@
 	<div>
 		{#if yProperty === 'adultPrevalence'}
 			<label for="prev/search">View as Prevelance : Search Ratio?</label>
-			<input type="checkbox" id="prev/search" name="prev/search" value="p/s" bind:checked={ratioed}>
+			<input
+				type="checkbox"
+				id="prev/search"
+				name="prev/search"
+				value="p/s"
+				bind:checked={ratioed}
+			/>
 		{:else if yProperty === 'relativeSearchInterest'}
 			<label for="search/prev">View as Search : Prevelance Ratio?</label>
-			<input type="checkbox" id="search/prev" name="search/prev" value="s/p" bind:checked={ratioed}>
+			<input
+				type="checkbox"
+				id="search/prev"
+				name="search/prev"
+				value="s/p"
+				bind:checked={ratioed}
+			/>
 		{/if}
 	</div>
 </div>
-	
+
 <div style="height: 700px">
-	<DataChart data={ratioData()} {xProperty} yProperty={yProperty} />
+	<DataChart data={ratioData()} {xProperty} {yProperty} />
 </div>
 
 <style>

@@ -1,5 +1,15 @@
 <script lang="ts">
-	import { schemeCategory10, scaleOrdinal, scaleBand, scaleLinear, scaleLog, extent, schemeGreys, max, randomWeibull } from 'd3';
+	import {
+		schemeCategory10,
+		scaleOrdinal,
+		scaleBand,
+		scaleLinear,
+		scaleLog,
+		extent,
+		schemeGreys,
+		max,
+		randomWeibull
+	} from 'd3';
 
 	import type { DataChartProps } from './constants';
 	import { margin, rarityThreshold } from './constants';
@@ -33,7 +43,7 @@
 		scaleOrdinal<string, string>()
 			.domain([...new Set(data.map(({ illness }) => illness))])
 			.range(schemeCategory10)
-	)
+	);
 
 	let xTicks = $derived(xScale.domain());
 	let yTicks = $derived(yScale.ticks());
@@ -54,13 +64,14 @@
 		</defs>
 		<g style="transform:translate({margin.left}px, {margin.top}px)">
 			<g style="transform:translate(0, {innerChartHeight}px)">
-				<line x1="0" y1="0" x2={innerChartWidth} y2="0"/> /**stroke="black" stroke-width="1px" */
+				<line x1="0" y1="0" x2={innerChartWidth} y2="0" /> /**stroke="black" stroke-width="1px" */
 				{#each xTicks as tick}
 					<g
 						style="transform: translate({(xScale(tick) ?? 0) +
-							(xScale.bandwidth() / 2) - 5}px, 0) rotate(35deg) translate(0, 20px);"
+							xScale.bandwidth() / 2 -
+							5}px, 0) rotate(35deg) translate(0, 20px);"
 					>
-						<text text-anchor="start" font-family='Tahoma' font-size={xScale.bandwidth() / 4}>
+						<text text-anchor="start" font-family="Tahoma" font-size={xScale.bandwidth() / 4}>
 							{tick}
 						</text>
 					</g>
@@ -68,54 +79,54 @@
 			</g>
 			<g>
 				{#each yTicks as tick}
-					<text x="-35px" y={yScale(tick)} font-family='Tahoma'>{tick}</text>
+					<text x="-35px" y={yScale(tick)} font-family="Tahoma">{tick}</text>
 				{/each}
 			</g>
 			{#each data as row (row[xProperty])}
 				{@const radius = 10}
-				{@const maximum = Math.max(...data.map(row => +row[yProperty]))}
+				{@const maximum = Math.max(...data.map((row) => +row[yProperty]))}
 				<path
 					d={`M ${xScale(String(row[xProperty])) ?? 0}, ${yScale(maximum) + (innerChartHeight - yScale(maximum))}
 						v ${-(innerChartHeight - yScale(maximum)) + radius}
 						a ${radius},${radius} 0 0 1 ${radius},${-radius}
-						h ${(xScale.bandwidth()) - 2 * radius}
+						h ${xScale.bandwidth() - 2 * radius}
 						a ${radius},${radius} 0 0 1 ${radius},${radius}
-						v ${(innerChartHeight - yScale(maximum)) - radius}`}
+						v ${innerChartHeight - yScale(maximum) - radius}`}
 					fill="#cccccc40"
 					filter="drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.4))"
 				/>
-				{#if (innerChartHeight - yScale(+row[yProperty])) > 5}
-				<path
-					d={`M ${xScale(String(row[xProperty])) ?? 0}, ${yScale(+row[yProperty]) + (innerChartHeight - yScale(+row[yProperty]))}
+				{#if innerChartHeight - yScale(+row[yProperty]) > 5}
+					<path
+						d={`M ${xScale(String(row[xProperty])) ?? 0}, ${yScale(+row[yProperty]) + (innerChartHeight - yScale(+row[yProperty]))}
 						v ${-(innerChartHeight - yScale(+row[yProperty])) + radius}
 						a ${radius},${radius} 0 0 1 ${radius},${-radius}
-						h ${(xScale.bandwidth()) - 2 * radius}
+						h ${xScale.bandwidth() - 2 * radius}
 						a ${radius},${radius} 0 0 1 ${radius},${radius}
-						v ${(innerChartHeight - yScale(+row[yProperty])) - radius}`}
-					fill={colorScale(row.illness)}
-				/>
+						v ${innerChartHeight - yScale(+row[yProperty]) - radius}`}
+						fill={colorScale(row.illness)}
+					/>
 				{:else}
-				<rect
-					x={xScale(String(row[xProperty])) ?? 0}
-					y={yScale(+row[yProperty])}
-					width={xScale.bandwidth()}
-					height={innerChartHeight - yScale(+row[yProperty])}
-					fill={colorScale(row.illness)}
-				/>
+					<rect
+						x={xScale(String(row[xProperty])) ?? 0}
+						y={yScale(+row[yProperty])}
+						width={xScale.bandwidth()}
+						height={innerChartHeight - yScale(+row[yProperty])}
+						fill={colorScale(row.illness)}
+					/>
 				{/if}
 				{@const value = parseFloat((+row[yProperty]).toFixed(6))}
 				{#key value}
 					<text
-						in:fade={{delay: 300}}
+						in:fade={{ delay: 300 }}
 						x={(xScale(String(row[xProperty])) ?? 0) + xScale.bandwidth() / 2}
 						y={yScale(+row[yProperty]) - 5}
 						text-anchor="middle"
 						font-weight="Bold"
 						font-family="Arial"
-						fill='black'
+						fill="black"
 						font-size={xScale.bandwidth() / 4.5}
 					>
-					{value}{row.adultPrevalence < rarityThreshold ? '*' : ''}
+						{value}{row.adultPrevalence < rarityThreshold ? '*' : ''}
 					</text>
 				{/key}
 			{/each}
