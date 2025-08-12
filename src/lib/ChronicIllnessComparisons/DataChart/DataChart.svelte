@@ -13,7 +13,7 @@
 	} from 'd3';
 
 	import type { DataChartProps } from './constants';
-	import { margin, rarityThreshold, fadeInOrOutNumber } from './constants';
+	import { margin, rarityThreshold, fadeAmount } from './constants';
 	import ChronicIllnessComparisons from '../ChronicIllnessComparisons.svelte';
 	import { fade } from 'svelte/transition';
 
@@ -105,7 +105,7 @@ function LightenDarkenColor(col:string,amt:number) {
 				<defs>
 					<linearGradient id="gradient-{i}" x1="0%" y1="0%" x2="0%" y2="100%">
 					<stop offset="0%" stop-color={colorScale(row.illness)}/>
-					<stop offset="100%" stop-color={LightenDarkenColor(colorScale(row.illness), fadeInOrOutNumber)} />
+					<stop offset="100%" stop-color={LightenDarkenColor(colorScale(row.illness), fadeAmount)} />
 					</linearGradient>
 				</defs>
 				<path

@@ -18,4 +18,4 @@ const americaPopulation = 340110988;
 export const rarityThreshold = rareIllnessUpperPopulationLimit / americaPopulation;
 
 // this number can be negative to get darker or positive to fade lighter
-export const fadeInOrOutNumber = 75
+export const fadeAmount = 75
