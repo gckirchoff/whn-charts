@@ -24,7 +24,6 @@
 	onMount(async () => {
 		const csvData = await csv<PrevalenceData>(src, (row) => {
 			const typedRow = row as CsvPrevalenceData;
-			console.log('Hello', typedRow);
 			return {
 				...typedRow,
 				adultPrevalence: Number(typedRow.adultPrevalence),
