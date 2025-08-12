@@ -1,6 +1,7 @@
 <script lang="ts">
 	import {
 		schemeCategory10,
+		schemeObservable10,
 		scaleOrdinal,
 		scaleBand,
 		scaleLinear,
@@ -12,9 +13,10 @@
 	} from 'd3';
 
 	import type { DataChartProps } from './constants';
-	import { margin, rarityThreshold } from './constants';
+	import { margin, rarityThreshold, fadeAmount } from './constants';
 	import ChronicIllnessComparisons from '../ChronicIllnessComparisons.svelte';
 	import { fade } from 'svelte/transition';
+	import { LightenDarkenColor } from './logic';
 
 	let { data, xProperty = 'illness', yProperty = 'adultPrevalence' }: DataChartProps = $props();
 
@@ -44,24 +46,12 @@
 			.domain([...new Set(data.map(({ illness }) => illness))])
 			.range(schemeCategory10)
 	);
-
 	let xTicks = $derived(xScale.domain());
 	let yTicks = $derived(yScale.ticks());
 </script>
 
 <div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight} id="main">
 	<svg width={chartWidth} height={chartHeight}>
-		<defs>
-			<!-- <linearGradient id='preventableGradient' x1="0" y1="0" x2="0" y2="1">
-			<stop offset="0%" stop-color='' />
-			<stop offset="100%" stop-color='' />
-			</linearGradient>
-			
-			<linearGradient id='nonPreventableGradient' x1="0" y1="0" x2="0" y2="1">
-			<stop offset="0%" stop-color='' />
-			<stop offset="100%" stop-color='' />
-			</linearGradient> -->
-		</defs>
 		<g style="transform:translate({margin.left}px, {margin.top}px)">
 			<g style="transform:translate(0, {innerChartHeight}px)">
 				<line x1="0" y1="0" x2={innerChartWidth} y2="0" /> /**stroke="black" stroke-width="1px" */
@@ -82,9 +72,15 @@
 					<text x="-35px" y={yScale(tick)} font-family="Tahoma">{tick}</text>
 				{/each}
 			</g>
-			{#each data as row (row[xProperty])}
+			{#each data as row, i (row[xProperty])}
 				{@const radius = 10}
-				{@const maximum = Math.max(...data.map((row) => +row[yProperty]))}
+				{@const maximum = Math.max(...data.map(row => +row[yProperty]))}
+				<defs>
+					<linearGradient id="gradient-{i}" x1="0%" y1="0%" x2="0%" y2="100%">
+					<stop offset="0%" stop-color={colorScale(row.illness)}/>
+					<stop offset="100%" stop-color={LightenDarkenColor(colorScale(row.illness), fadeAmount)} />
+					</linearGradient>
+				</defs>
 				<path
 					d={`M ${xScale(String(row[xProperty])) ?? 0}, ${yScale(maximum) + (innerChartHeight - yScale(maximum))}
 						v ${-(innerChartHeight - yScale(maximum)) + radius}
@@ -103,7 +99,7 @@
 						h ${xScale.bandwidth() - 2 * radius}
 						a ${radius},${radius} 0 0 1 ${radius},${radius}
 						v ${innerChartHeight - yScale(+row[yProperty]) - radius}`}
-						fill={colorScale(row.illness)}
+						fill='url(#gradient-{i})'
 					/>
 				{:else}
 					<rect
@@ -111,7 +107,7 @@
 						y={yScale(+row[yProperty])}
 						width={xScale.bandwidth()}
 						height={innerChartHeight - yScale(+row[yProperty])}
-						fill={colorScale(row.illness)}
+						fill='url(#gradient-{i})'
 					/>
 				{/if}
 				{@const value = parseFloat((+row[yProperty]).toFixed(6))}
