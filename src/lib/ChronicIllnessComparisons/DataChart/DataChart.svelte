@@ -1,20 +1,8 @@
 <script lang="ts">
-	import {
-		schemeCategory10,
-		schemeObservable10,
-		scaleOrdinal,
-		scaleBand,
-		scaleLinear,
-		scaleLog,
-		extent,
-		schemeGreys,
-		max,
-		randomWeibull
-	} from 'd3';
+	import { schemeCategory10, scaleOrdinal, scaleBand, scaleLinear, extent } from 'd3';
 
 	import type { DataChartProps } from './constants';
 	import { margin, rarityThreshold, fadeAmount } from './constants';
-	import ChronicIllnessComparisons from '../ChronicIllnessComparisons.svelte';
 	import { fade } from 'svelte/transition';
 	import { LightenDarkenColor } from './logic';
 
@@ -36,11 +24,7 @@
 			.domain(extent(data, (row) => +row[yProperty]) as [number, number])
 			.range([innerChartHeight, 0])
 	);
-	// let yScaleLog = $derived(
-	// 	scaleLog()
-	// 		.domain(extent(data, (row) => +row[yProperty]) as [number, number])
-	// 		.range([innerChartHeight, 0])
-	// );
+
 	let colorScale = $derived(
 		scaleOrdinal<string, string>()
 			.domain([...new Set(data.map(({ illness }) => illness))])
@@ -74,11 +58,14 @@
 			</g>
 			{#each data as row, i (row[xProperty])}
 				{@const radius = 10}
-				{@const maximum = Math.max(...data.map(row => +row[yProperty]))}
+				{@const maximum = Math.max(...data.map((row) => +row[yProperty]))}
 				<defs>
 					<linearGradient id="gradient-{i}" x1="0%" y1="0%" x2="0%" y2="100%">
-					<stop offset="0%" stop-color={colorScale(row.illness)}/>
-					<stop offset="100%" stop-color={LightenDarkenColor(colorScale(row.illness), fadeAmount)} />
+						<stop offset="0%" stop-color={colorScale(row.illness)} />
+						<stop
+							offset="100%"
+							stop-color={LightenDarkenColor(colorScale(row.illness), fadeAmount)}
+						/>
 					</linearGradient>
 				</defs>
 				<path
@@ -99,7 +86,7 @@
 						h ${xScale.bandwidth() - 2 * radius}
 						a ${radius},${radius} 0 0 1 ${radius},${radius}
 						v ${innerChartHeight - yScale(+row[yProperty]) - radius}`}
-						fill='url(#gradient-{i})'
+						fill="url(#gradient-{i})"
 					/>
 				{:else}
 					<rect
@@ -107,7 +94,7 @@
 						y={yScale(+row[yProperty])}
 						width={xScale.bandwidth()}
 						height={innerChartHeight - yScale(+row[yProperty])}
-						fill='url(#gradient-{i})'
+						fill="url(#gradient-{i})"
 					/>
 				{/if}
 				{@const value = parseFloat((+row[yProperty]).toFixed(6))}
@@ -126,13 +113,6 @@
 					</text>
 				{/key}
 			{/each}
-			<!-- <text x={innerChartWidth} y={innerChartHeight + 135} text-anchor="end" font-family='Tahoma'>
-				* denotes common illnesses
-			</text> -->
-			<!-- <text x={innerChartWidth} y={-30} text-anchor="end" font-family='Tahoma'> : non-preventable </text>
-			<text x={innerChartWidth} y={-10} text-anchor="end" font-family='Tahoma'> : preventable </text>
-			<rect x={innerChartWidth - 152} y={-42} width={25} height={16} fill={'url(#nonPreventableGradient)'} />
-			<rect x={innerChartWidth - 120} y={-22} width={25} height={16} fill={'url(#preventableGradient)'} /> -->
 		</g>
 	</svg>
 </div>
