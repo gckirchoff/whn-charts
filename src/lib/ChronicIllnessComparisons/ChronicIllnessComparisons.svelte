@@ -89,7 +89,7 @@
 	</div>
 	<div class="inputs">
 		<label>
-			Show rare
+			Show rare diseases:
 			<input type="checkbox" bind:checked={showRare} />
 		</label>
 	</div>

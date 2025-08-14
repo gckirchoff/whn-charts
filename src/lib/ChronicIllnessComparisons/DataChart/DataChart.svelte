@@ -60,7 +60,7 @@
 				{@const radius = 10}
 				{@const maximum = Math.max(...data.map((row) => +row[yProperty]))}
 				<defs>
-					<linearGradient id="gradient-{i}" x1="0%" y1="0%" x2="0%" y2="100%">
+					<linearGradient id="gradient-{i}" x1="0%" y1="100%" x2="0%" y2="0%">
 						<stop offset="0%" stop-color={colorScale(row.illness)} />
 						<stop
 							offset="100%"
