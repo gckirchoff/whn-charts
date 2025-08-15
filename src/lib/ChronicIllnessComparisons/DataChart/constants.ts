@@ -16,3 +16,6 @@ export const margin = {
 const rareIllnessUpperPopulationLimit = 200000;
 const americaPopulation = 340110988;
 export const rarityThreshold = rareIllnessUpperPopulationLimit / americaPopulation;
+
+// this number can be negative to get darker or positive to fade lighter
+export const fadeAmount = 55
