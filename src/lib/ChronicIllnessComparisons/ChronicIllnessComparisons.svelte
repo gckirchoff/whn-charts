@@ -17,6 +17,7 @@
 	let yProperty = $state<keyof PrevalenceData>('adultPrevalence');
 	let ratioYProperty = $state<keyof PrevalenceData>('relativeSearchInterest');
 	let data = $state<PrevalenceData[]>([]);
+	let getAllData = $derived(() => Array.from(new Set(data.map(d => d.illness))));
 
 	let ratioed = $state(false);
 	let showRare = $state(false);
@@ -96,7 +97,7 @@
 </div>
 
 <div style="height: 700px">
-	<DataChart data={processedData} {xProperty} {yProperty} />
+	<DataChart data={processedData} {xProperty} {yProperty} {showRare} allData={getAllData()} />
 </div>
 
 <style>
