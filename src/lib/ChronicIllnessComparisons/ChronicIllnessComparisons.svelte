@@ -22,6 +22,9 @@
 	let ratioed = $state(false);
 	let showRare = $state(false);
 
+	let ratio1 = options.find(o => o.value === yProperty)?.label;
+	let ratio2 = options.find(o => o.value === ratioYProperty)?.label;
+
 	onMount(async () => {
 		const csvData = await csv<PrevalenceData>(src, (row) => {
 			const typedRow = row as CsvPrevalenceData;
@@ -78,21 +81,27 @@
 				{/each}
 			</select>
 		</label>
-		<input type="checkbox" bind:checked={ratioed} />
-		<p>as ratio{ratioed ? ' of' : ''}</p>
+	</div>
+	<div class = "inputs">
+			<div class="checkbox-wrapper-6">
+				<input class="tgl tgl-light" id="cb1-7" type="checkbox" bind:checked={ratioed}/>
+				<label class="tgl-btn" for="cb1-7"></label>
+			</div>
+		<p>view as {ratioed ? 'ratio of ' + ratio1 + ' /' : ratio1 + ' / ' + ratio2 + ' ratio'}</p>
 		{#if ratioed}
 			<select bind:value={ratioYProperty}>
-				{#each options as option}
-					<option value={option.value}>{option.label}</option>
-				{/each}
+			{#each options as option}
+				<option value={option.value} disabled={option.value === yProperty}>{option.label}</option>
+			{/each}
 			</select>
 		{/if}
 	</div>
-	<div class="inputs">
-		<label>
-			Show rare diseases:
-			<input type="checkbox" bind:checked={showRare} />
-		</label>
+	<div class="inputs" id="rare">
+		<p>Show rare diseases:</p>
+		<div class="checkbox-wrapper-6">
+			<input class="tgl tgl-light" id="cb1-6" type="checkbox" bind:checked={showRare}/>
+			<label class="tgl-btn" for="cb1-6"></label>
+		</div>
 	</div>
 </div>
 
@@ -104,7 +113,12 @@
 	.menu {
 		display: flex;
 		justify-content: space-between;
-		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		font-family: Tahoma, Geneva, Verdana, sans-serif;
+		padding: 10px;
+		background-color: #f9f9f9;
+		border-top-left-radius: 20px;
+		border-top-right-radius: 20px;
+		justify-content: space-around;
 	}
 
 	.inputs {
@@ -112,5 +126,82 @@
 		justify-content: space-between;
 		gap: 1rem;
 		align-items: center;
+		font-family: Tahoma, Geneva, Verdana, sans-serif;
+	}
+
+	select {
+		font-size: 12pt;
+		font-family: Tahoma, Geneva, Verdana, sans-serif;
+		cursor: pointer;
+	}
+
+	#rare {
+		justify-content: center;
+		flex-direction: column;
+		gap: 0px;
+	}
+
+	.checkbox-wrapper-6 .tgl {
+		display: none;
+	}
+	.checkbox-wrapper-6 .tgl,
+	.checkbox-wrapper-6 .tgl:after,
+	.checkbox-wrapper-6 .tgl:before,
+	.checkbox-wrapper-6 .tgl + .tgl-btn {
+		box-sizing: border-box;
+	}
+	.checkbox-wrapper-6 .tgl::-moz-selection,
+	.checkbox-wrapper-6 .tgl:after::-moz-selection,
+	.checkbox-wrapper-6 .tgl:before::-moz-selection,
+	.checkbox-wrapper-6 .tgl + .tgl-btn::-moz-selection,
+	.checkbox-wrapper-6 .tgl::selection,
+	.checkbox-wrapper-6 .tgl:after::selection,
+	.checkbox-wrapper-6 .tgl:before::selection,
+	.checkbox-wrapper-6 .tgl + .tgl-btn::selection {
+		background: none;
+	}
+	.checkbox-wrapper-6 .tgl + .tgl-btn {
+		outline: 0;
+		display: block;
+		width: 2em;
+		height: 1em;
+		position: relative;
+		cursor: pointer;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+			-ms-user-select: none;
+				user-select: none;
+	}
+	.checkbox-wrapper-6 .tgl + .tgl-btn:after,
+	.checkbox-wrapper-6 .tgl + .tgl-btn:before {
+		position: relative;
+		display: block;
+		content: "";
+		width: 50%;
+		height: 100%;
+	}
+	.checkbox-wrapper-6 .tgl + .tgl-btn:after {
+		left: 0;
+	}
+	.checkbox-wrapper-6 .tgl + .tgl-btn:before {
+		display: none;
+	}
+	.checkbox-wrapper-6 .tgl:checked + .tgl-btn:after {
+		left: 50%;
+	}
+
+	.checkbox-wrapper-6 .tgl-light + .tgl-btn {
+		background: #d8292a;
+		border-radius: 2em;
+		padding: 2px;
+		transition: all 0.4s ease;
+	}
+	.checkbox-wrapper-6 .tgl-light + .tgl-btn:after {
+		border-radius: 50%;
+		background: #fff;
+		transition: all 0.2s ease;
+	}
+	.checkbox-wrapper-6 .tgl-light:checked + .tgl-btn {
+		background: #2da12d;
 	}
 </style>

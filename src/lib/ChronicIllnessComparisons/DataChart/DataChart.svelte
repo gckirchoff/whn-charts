@@ -52,11 +52,11 @@
 					</g>
 				{/each}
 			</g>
-			<g>
+			<!-- <g>
 				{#each yTicks as tick}
 					<text x="-35px" y={yScale(tick)} font-family="Tahoma">{tick}</text>
 				{/each}
-			</g>
+			</g> -->
 			{#each data as row, i (row[xProperty])}
 				{@const radius = 10}
 				{@const maximum = Math.max(...data.map((row) => +row[yProperty]))}
@@ -125,7 +125,8 @@
 
 	#main {
 		background-color: #f9f9f9;
-		border-radius: 20px;
+		border-bottom-right-radius: 20px;
+		border-bottom-left-radius: 20px;
 	}
 
 	path {
