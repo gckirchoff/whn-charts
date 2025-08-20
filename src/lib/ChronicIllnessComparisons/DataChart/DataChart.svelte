@@ -6,7 +6,13 @@
 	import { fade } from 'svelte/transition';
 	import { LightenDarkenColor } from './logic';
 
-	let { data, xProperty = 'illness', yProperty = 'adultPrevalence', showRare, allData }: DataChartProps & { showRare: boolean, allData: string[] } = $props();
+	let {
+		data,
+		xProperty = 'illness',
+		yProperty = 'adultPrevalence',
+		showRare,
+		allData
+	}: DataChartProps = $props();
 
 	let chartWidth = $state(500);
 	let chartHeight = $state(500);
@@ -25,11 +31,7 @@
 			.range([innerChartHeight, 0])
 	);
 
-	let colorScale = $derived(
-		scaleOrdinal<string, string>()
-			.domain(allData)
-			.range(schemeCategory10)
-	);
+	let colorScale = $derived(scaleOrdinal<string, string>().domain(allData).range(schemeCategory10));
 
 	let xTicks = $derived(xScale.domain());
 	let yTicks = $derived(yScale.ticks());
@@ -52,11 +54,11 @@
 					</g>
 				{/each}
 			</g>
-			<g>
+			<!-- <g>
 				{#each yTicks as tick}
 					<text x="-35px" y={yScale(tick)} font-family="Tahoma">{tick}</text>
 				{/each}
-			</g>
+			</g> -->
 			{#each data as row, i (row[xProperty])}
 				{@const radius = 10}
 				{@const maximum = Math.max(...data.map((row) => +row[yProperty]))}
@@ -125,7 +127,8 @@
 
 	#main {
 		background-color: #f9f9f9;
-		border-radius: 20px;
+		border-bottom-right-radius: 20px;
+		border-bottom-left-radius: 20px;
 	}
 
 	path {
