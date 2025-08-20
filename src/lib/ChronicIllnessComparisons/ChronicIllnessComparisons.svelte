@@ -17,13 +17,13 @@
 	let yProperty = $state<keyof PrevalenceData>('adultPrevalence');
 	let ratioYProperty = $state<keyof PrevalenceData>('relativeSearchInterest');
 	let data = $state<PrevalenceData[]>([]);
-	let getAllData = $derived(() => Array.from(new Set(data.map(d => d.illness))));
+	let allData = $derived(Array.from(new Set(data.map((d) => d.illness))));
 
 	let ratioed = $state(false);
 	let showRare = $state(false);
 
-	let ratio1 = options.find(o => o.value === yProperty)?.label;
-	let ratio2 = options.find(o => o.value === ratioYProperty)?.label;
+	let ratio1 = $derived(options.find((o) => o.value === yProperty)?.label);
+	let ratio2 = $derived(options.find((o) => o.value === ratioYProperty)?.label);
 
 	onMount(async () => {
 		const csvData = await csv<PrevalenceData>(src, (row) => {
@@ -82,31 +82,31 @@
 			</select>
 		</label>
 	</div>
-	<div class = "inputs">
-			<div class="checkbox-wrapper-6">
-				<input class="tgl tgl-light" id="cb1-7" type="checkbox" bind:checked={ratioed}/>
-				<label class="tgl-btn" for="cb1-7"></label>
-			</div>
+	<div class="inputs">
+		<div class="checkbox-wrapper-6">
+			<input class="tgl tgl-light" id="cb1-7" type="checkbox" bind:checked={ratioed} />
+			<label class="tgl-btn" for="cb1-7"></label>
+		</div>
 		<p>view as {ratioed ? 'ratio of ' + ratio1 + ' /' : ratio1 + ' / ' + ratio2 + ' ratio'}</p>
 		{#if ratioed}
 			<select bind:value={ratioYProperty}>
-			{#each options as option}
-				<option value={option.value} disabled={option.value === yProperty}>{option.label}</option>
-			{/each}
+				{#each options as option}
+					<option value={option.value} disabled={option.value === yProperty}>{option.label}</option>
+				{/each}
 			</select>
 		{/if}
 	</div>
 	<div class="inputs" id="rare">
 		<p>Show rare diseases:</p>
 		<div class="checkbox-wrapper-6">
-			<input class="tgl tgl-light" id="cb1-6" type="checkbox" bind:checked={showRare}/>
+			<input class="tgl tgl-light" id="cb1-6" type="checkbox" bind:checked={showRare} />
 			<label class="tgl-btn" for="cb1-6"></label>
 		</div>
 	</div>
 </div>
 
 <div style="height: 700px">
-	<DataChart data={processedData} {xProperty} {yProperty} {showRare} allData={getAllData()} />
+	<DataChart data={processedData} {xProperty} {yProperty} {showRare} {allData} />
 </div>
 
 <style>
@@ -169,14 +169,14 @@
 		cursor: pointer;
 		-webkit-user-select: none;
 		-moz-user-select: none;
-			-ms-user-select: none;
-				user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 	}
 	.checkbox-wrapper-6 .tgl + .tgl-btn:after,
 	.checkbox-wrapper-6 .tgl + .tgl-btn:before {
 		position: relative;
 		display: block;
-		content: "";
+		content: '';
 		width: 50%;
 		height: 100%;
 	}

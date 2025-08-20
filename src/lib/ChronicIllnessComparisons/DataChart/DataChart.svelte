@@ -6,7 +6,13 @@
 	import { fade } from 'svelte/transition';
 	import { LightenDarkenColor } from './logic';
 
-	let { data, xProperty = 'illness', yProperty = 'adultPrevalence', showRare, allData }: DataChartProps & { showRare: boolean, allData: string[] } = $props();
+	let {
+		data,
+		xProperty = 'illness',
+		yProperty = 'adultPrevalence',
+		showRare,
+		allData
+	}: DataChartProps = $props();
 
 	let chartWidth = $state(500);
 	let chartHeight = $state(500);
@@ -25,11 +31,7 @@
 			.range([innerChartHeight, 0])
 	);
 
-	let colorScale = $derived(
-		scaleOrdinal<string, string>()
-			.domain(allData)
-			.range(schemeCategory10)
-	);
+	let colorScale = $derived(scaleOrdinal<string, string>().domain(allData).range(schemeCategory10));
 
 	let xTicks = $derived(xScale.domain());
 	let yTicks = $derived(yScale.ticks());

@@ -4,6 +4,8 @@ export interface DataChartProps {
 	data: PrevalenceData[];
 	xProperty: keyof PrevalenceData;
 	yProperty?: keyof PrevalenceData;
+	showRare: boolean;
+	allData: string[];
 }
 
 export const margin = {
@@ -18,4 +20,4 @@ const americaPopulation = 340110988;
 export const rarityThreshold = rareIllnessUpperPopulationLimit / americaPopulation;
 
 // this number can be negative to get darker or positive to fade lighter
-export const fadeAmount = 55
+export const fadeAmount = 55;
