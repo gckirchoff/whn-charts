@@ -1,10 +1,18 @@
 <script lang="ts">
-	import { schemeCategory10, scaleOrdinal, scaleBand, scaleLinear, scaleLog, extent } from 'd3';
+	import {
+		schemeCategory10,
+		scaleOrdinal,
+		scaleBand,
+		scaleLinear,
+		scaleLog,
+		extent,
+		max
+	} from 'd3';
 
 	import type { DataChartProps } from './constants';
-	import { margin, rarityThreshold, fadeAmount } from './constants';
+	import { margin, rarityThreshold } from './constants';
 	import { fade } from 'svelte/transition';
-	import { LightenDarkenColor } from './logic';
+	import Bar from './Bar/Bar.svelte';
 
 	let {
 		data,
@@ -19,9 +27,6 @@
 	let chartHeight = $state(500);
 	let innerChartWidth = $derived(chartWidth - margin.left - margin.right);
 	let innerChartHeight = $derived(chartHeight - margin.top - margin.bottom);
-
-	$inspect(data[6]?.illness, data[6]?.adultPrevalence);
-	console.log('rarityThreshold', rarityThreshold);
 
 	let usedData = $derived(
 		compareMode === 'to each other'
@@ -41,7 +46,7 @@
 		const domain =
 			compareMode === 'to each other'
 				? (extent(usedData, (row) => +row[yProperty]) as [number, number])
-				: (extent(usedData, (row) => +row[yProperty]) as [number, number]);
+				: ([0.075, 1000] as [number, number]);
 
 		return scale().domain(domain).range([innerChartHeight, 0]);
 	});
@@ -49,14 +54,15 @@
 	let colorScale = $derived(scaleOrdinal<string, string>().domain(allData).range(schemeCategory10));
 
 	let xTicks = $derived(xScale.domain());
-	let yTicks = $derived(yScale.ticks());
+	let yTicks = $derived(compareMode === 'to each other' ? yScale.ticks() : [0.1, 1, 10, 100]);
 </script>
 
 <div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight} class="main">
 	<svg width={chartWidth} height={chartHeight}>
-		<g style="transform:translate({margin.left}px, {margin.top}px)">
-			<g style="transform:translate(0, {innerChartHeight}px)">
-				<line x1="0" y1="0" x2={innerChartWidth} y2="0" /> /**stroke="black" stroke-width="1px" */
+		<g style="transform: translate({margin.left}px, {margin.top}px)">
+			<!-- AxisX -->
+			<g style="transform: translate(0, {innerChartHeight}px)">
+				<line x1="0" y1="0" x2={innerChartWidth} y2="0" />
 				{#each xTicks as tick}
 					<g
 						style="transform: translate({(xScale(tick) ?? 0) +
@@ -69,59 +75,41 @@
 					</g>
 				{/each}
 			</g>
+			<!-- AxisY -->
 			<g>
 				{#each yTicks as tick}
-					<text x="-35px" y={yScale(tick)} font-family="Tahoma">{tick}</text>
+					<text x="-35px" y={yScale(tick)} font-family="Tahoma"
+						>{tick}{compareMode === 'to each other' ? '' : 'x'}</text
+					>
 				{/each}
 			</g>
 			{#each usedData as row, i (row[xProperty])}
-				{@const radius = 10}
-				{@const maximum = Math.max(...usedData.map((row) => +row[yProperty]))}
-				<defs>
-					<linearGradient id="gradient-{i}" x1="0%" y1="100%" x2="0%" y2="0%">
-						<stop offset="0%" stop-color={colorScale(row.illness)} />
-						<stop
-							offset="100%"
-							stop-color={LightenDarkenColor(colorScale(row.illness), fadeAmount)}
-						/>
-					</linearGradient>
-				</defs>
-				<path
-					d={`M ${xScale(String(row[xProperty])) ?? 0}, ${yScale(maximum) + (innerChartHeight - yScale(maximum))}
-						v ${-(innerChartHeight - yScale(maximum)) + radius}
-						a ${radius},${radius} 0 0 1 ${radius},${-radius}
-						h ${xScale.bandwidth() - 2 * radius}
-						a ${radius},${radius} 0 0 1 ${radius},${radius}
-						v ${innerChartHeight - yScale(maximum) - radius}`}
+				{@const y = yScale(+row[yProperty])}
+				{@const y0 = compareMode === 'to each other' ? innerChartHeight : yScale(1)}
+				<Bar
+					x={xScale(String(row[xProperty])) ?? 0}
+					y={innerChartHeight}
+					width={xScale.bandwidth()}
+					height={innerChartHeight}
 					fill="#cccccc40"
 					filter="drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.4))"
 				/>
-				{#if innerChartHeight - yScale(+row[yProperty]) > 5}
-					<path
-						d={`M ${xScale(String(row[xProperty])) ?? 0}, ${yScale(+row[yProperty]) + (innerChartHeight - yScale(+row[yProperty]))}
-						v ${-(innerChartHeight - yScale(+row[yProperty])) + radius}
-						a ${radius},${radius} 0 0 1 ${radius},${-radius}
-						h ${xScale.bandwidth() - 2 * radius}
-						a ${radius},${radius} 0 0 1 ${radius},${radius}
-						v ${innerChartHeight - yScale(+row[yProperty]) - radius}`}
-						fill="url(#gradient-{i})"
-					/>
-				{:else}
-					<rect
-						x={xScale(String(row[xProperty])) ?? 0}
-						y={yScale(+row[yProperty])}
-						width={xScale.bandwidth()}
-						height={innerChartHeight - yScale(+row[yProperty])}
-						fill="url(#gradient-{i})"
-					/>
-				{/if}
-				{@const value = parseFloat((+row[yProperty]).toFixed(6))}
+				<Bar
+					x={xScale(String(row[xProperty])) ?? 0}
+					y={y0}
+					height={compareMode === 'to each other' ? innerChartHeight - y : yScale(1) - y}
+					width={xScale.bandwidth()}
+					fill={colorScale(row.illness)}
+					gradient={true}
+				/>
+				{@const value = `${parseFloat((+row[yProperty]).toFixed(2))}${compareMode === 'to each other' ? '' : 'x'}`}
 				{#key `${showRare}-${value}`}
 					<text
 						in:fade={{ delay: 300 }}
 						x={(xScale(String(row[xProperty])) ?? 0) + xScale.bandwidth() / 2}
-						y={yScale(+row[yProperty]) - 5}
+						y={y + (y <= y0 ? -10 : 10)}
 						text-anchor="middle"
+						dominant-baseline="middle"
 						font-weight="Bold"
 						font-family="Arial"
 						fill="black"
@@ -132,7 +120,22 @@
 				{/key}
 			{/each}
 			{#if compareMode === 'to rare baseline'}
-				<line x1={0} y1={yScale(1)} x2={chartWidth} y2={yScale(1)} stroke="red" stroke-width={2} />
+				<text
+					x={(xScale('Post Polio Syndrome') ?? 0) + xScale.bandwidth() * 0.5}
+					y={yScale(1) - 10}
+					font-size={xScale.bandwidth() / 4}
+					text-anchor="middle"
+					font-family="Tahoma"
+					fill="red">Rare Disease Threshold</text
+				>
+				<line
+					x1={0}
+					y1={yScale(1)}
+					x2={innerChartWidth}
+					y2={yScale(1)}
+					stroke="red"
+					stroke-width={2}
+				/>
 			{/if}
 		</g>
 	</svg>

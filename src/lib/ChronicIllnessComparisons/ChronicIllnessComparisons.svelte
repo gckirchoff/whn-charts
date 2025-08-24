@@ -13,6 +13,7 @@
 
 	let { src, compareMode = 'to each other' }: ChronicIlnessComparisonsProps = $props();
 
+	let hasMounted = $state(false);
 	let xProperty = $state<keyof PrevalenceData>('illness');
 	let yProperty = $state<keyof PrevalenceData>('adultPrevalence');
 	let ratioYProperty = $state<keyof PrevalenceData>('relativeSearchInterest');
@@ -38,6 +39,7 @@
 			};
 		});
 		data = csvData.sort((a, b) => (a.adultPrevalence > b.adultPrevalence ? 1 : -1));
+		hasMounted = true;
 	});
 
 	const handleYPropertyChange = (
@@ -73,42 +75,48 @@
 	});
 </script>
 
-<div class="menu">
-	<div class="inputs">
-		<label>
-			<select bind:value={yProperty} onchange={handleYPropertyChange}>
-				{#each options as option}
-					<option value={option.value}>{option.label}</option>
-				{/each}
-			</select>
-		</label>
-	</div>
-	<div class="inputs">
-		<div class="checkbox-wrapper-6">
-			<input class="tgl tgl-light" id="cb1-7" type="checkbox" bind:checked={ratioed} />
-			<label class="tgl-btn" for="cb1-7"></label>
+{#if compareMode === 'to each other'}
+	<div class="menu">
+		<div class="inputs">
+			<label>
+				<select bind:value={yProperty} onchange={handleYPropertyChange}>
+					{#each options as option}
+						<option value={option.value}>{option.label}</option>
+					{/each}
+				</select>
+			</label>
 		</div>
-		<p>view as {ratioed ? 'ratio of ' + ratio1 + ' /' : ratio1 + ' / ' + ratio2 + ' ratio'}</p>
-		{#if ratioed}
-			<select bind:value={ratioYProperty}>
-				{#each options as option}
-					<option value={option.value} disabled={option.value === yProperty}>{option.label}</option>
-				{/each}
-			</select>
-		{/if}
-	</div>
-	<div class="inputs rare">
-		<p>Show rare diseases:</p>
-		<div class="checkbox-wrapper-6">
-			<input class="tgl tgl-light" id="cb1-6" type="checkbox" bind:checked={showRare} />
-			<label class="tgl-btn" for="cb1-6"></label>
+		<div class="inputs">
+			<div class="checkbox-wrapper-6">
+				<input class="tgl tgl-light" id="cb1-7" type="checkbox" bind:checked={ratioed} />
+				<label class="tgl-btn" for="cb1-7"></label>
+			</div>
+			<p>view as {ratioed ? 'ratio of ' + ratio1 + ' /' : ratio1 + ' / ' + ratio2 + ' ratio'}</p>
+			{#if ratioed}
+				<select bind:value={ratioYProperty}>
+					{#each options as option}
+						<option value={option.value} disabled={option.value === yProperty}
+							>{option.label}</option
+						>
+					{/each}
+				</select>
+			{/if}
+		</div>
+		<div class="inputs rare">
+			<p>Show rare diseases:</p>
+			<div class="checkbox-wrapper-6">
+				<input class="tgl tgl-light" id="cb1-6" type="checkbox" bind:checked={showRare} />
+				<label class="tgl-btn" for="cb1-6"></label>
+			</div>
 		</div>
 	</div>
-</div>
+{/if}
 
-<div style="height: 700px">
-	<DataChart data={processedData} {xProperty} {yProperty} {showRare} {allData} {compareMode} />
-</div>
+{#if hasMounted}
+	<div style="height: 700px">
+		<DataChart data={processedData} {xProperty} {yProperty} {showRare} {allData} {compareMode} />
+	</div>
+{/if}
 
 <style>
 	.menu {
