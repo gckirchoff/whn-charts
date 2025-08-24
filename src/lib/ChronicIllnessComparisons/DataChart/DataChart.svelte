@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { schemeCategory10, scaleOrdinal, scaleBand, scaleLinear, extent } from 'd3';
+	import { schemeCategory10, scaleOrdinal, scaleBand, scaleLinear, scaleLog, extent } from 'd3';
 
 	import type { DataChartProps } from './constants';
 	import { margin, rarityThreshold, fadeAmount } from './constants';
@@ -11,7 +11,8 @@
 		xProperty = 'illness',
 		yProperty = 'adultPrevalence',
 		showRare,
-		allData
+		allData,
+		mode
 	}: DataChartProps = $props();
 
 	let chartWidth = $state(500);
@@ -19,17 +20,31 @@
 	let innerChartWidth = $derived(chartWidth - margin.left - margin.right);
 	let innerChartHeight = $derived(chartHeight - margin.top - margin.bottom);
 
+	$inspect(data[6]?.illness, data[6]?.adultPrevalence);
+	console.log('rarityThreshold', rarityThreshold);
+
+	let usedData = $derived(
+		mode === 'compare to each other'
+			? data
+			: data.map((d) => ({ ...d, adultPrevalence: d.adultPrevalence / rarityThreshold }))
+	);
+
 	let xScale = $derived(
 		scaleBand()
 			.domain(data.map((row) => row[xProperty] as string))
 			.range([0, innerChartWidth])
 			.padding(0.15)
 	);
-	let yScale = $derived(
-		scaleLinear()
-			.domain(extent(data, (row) => +row[yProperty]) as [number, number])
-			.range([innerChartHeight, 0])
-	);
+
+	let yScale = $derived.by(() => {
+		const scale = mode === 'compare to each other' ? scaleLinear : scaleLog;
+		const domain =
+			mode === 'compare to each other'
+				? (extent(usedData, (row) => +row[yProperty]) as [number, number])
+				: (extent(usedData, (row) => +row[yProperty]) as [number, number]);
+
+		return scale().domain(domain).range([innerChartHeight, 0]);
+	});
 
 	let colorScale = $derived(scaleOrdinal<string, string>().domain(allData).range(schemeCategory10));
 
@@ -37,7 +52,7 @@
 	let yTicks = $derived(yScale.ticks());
 </script>
 
-<div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight} id="main">
+<div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight} class="main">
 	<svg width={chartWidth} height={chartHeight}>
 		<g style="transform:translate({margin.left}px, {margin.top}px)">
 			<g style="transform:translate(0, {innerChartHeight}px)">
@@ -54,14 +69,14 @@
 					</g>
 				{/each}
 			</g>
-			<!-- <g>
+			<g>
 				{#each yTicks as tick}
 					<text x="-35px" y={yScale(tick)} font-family="Tahoma">{tick}</text>
 				{/each}
-			</g> -->
-			{#each data as row, i (row[xProperty])}
+			</g>
+			{#each usedData as row, i (row[xProperty])}
 				{@const radius = 10}
-				{@const maximum = Math.max(...data.map((row) => +row[yProperty]))}
+				{@const maximum = Math.max(...usedData.map((row) => +row[yProperty]))}
 				<defs>
 					<linearGradient id="gradient-{i}" x1="0%" y1="100%" x2="0%" y2="0%">
 						<stop offset="0%" stop-color={colorScale(row.illness)} />
@@ -116,6 +131,9 @@
 					</text>
 				{/key}
 			{/each}
+			{#if mode === 'compare to rare baseline'}
+				<line x1={0} y1={yScale(1)} x2={chartWidth} y2={yScale(1)} stroke="red" stroke-width={2} />
+			{/if}
 		</g>
 	</svg>
 </div>
@@ -125,7 +143,7 @@
 		height: 100%;
 	}
 
-	#main {
+	.main {
 		background-color: #f9f9f9;
 		border-bottom-right-radius: 20px;
 		border-bottom-left-radius: 20px;

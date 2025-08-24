@@ -1,4 +1,4 @@
-import type { PrevalenceData } from '../constants';
+import type { Mode, PrevalenceData } from '../constants';
 
 export interface DataChartProps {
 	data: PrevalenceData[];
@@ -6,6 +6,7 @@ export interface DataChartProps {
 	yProperty?: keyof PrevalenceData;
 	showRare: boolean;
 	allData: string[];
+	mode: Mode;
 }
 
 export const margin = {

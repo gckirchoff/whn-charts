@@ -11,7 +11,7 @@
 	} from './constants';
 	import { isRare } from './logic';
 
-	let { src }: ChronicIlnessComparisonsProps = $props();
+	let { src, mode = 'compare to each other' }: ChronicIlnessComparisonsProps = $props();
 
 	let xProperty = $state<keyof PrevalenceData>('illness');
 	let yProperty = $state<keyof PrevalenceData>('adultPrevalence');
@@ -20,7 +20,7 @@
 	let allData = $derived(Array.from(new Set(data.map((d) => d.illness))));
 
 	let ratioed = $state(false);
-	let showRare = $state(false);
+	let showRare = $state(true);
 
 	let ratio1 = $derived(options.find((o) => o.value === yProperty)?.label);
 	let ratio2 = $derived(options.find((o) => o.value === ratioYProperty)?.label);
@@ -96,7 +96,7 @@
 			</select>
 		{/if}
 	</div>
-	<div class="inputs" id="rare">
+	<div class="inputs rare">
 		<p>Show rare diseases:</p>
 		<div class="checkbox-wrapper-6">
 			<input class="tgl tgl-light" id="cb1-6" type="checkbox" bind:checked={showRare} />
@@ -106,7 +106,7 @@
 </div>
 
 <div style="height: 700px">
-	<DataChart data={processedData} {xProperty} {yProperty} {showRare} {allData} />
+	<DataChart data={processedData} {xProperty} {yProperty} {showRare} {allData} {mode} />
 </div>
 
 <style>
@@ -135,7 +135,7 @@
 		cursor: pointer;
 	}
 
-	#rare {
+	.rare {
 		justify-content: center;
 		flex-direction: column;
 		gap: 0px;

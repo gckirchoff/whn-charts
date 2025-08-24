@@ -1,7 +1,10 @@
 import type { RawCsv } from '$lib/constants';
 
+export type Mode = 'compare to each other' | 'compare to rare baseline';
+
 export interface ChronicIlnessComparisonsProps {
 	src: string;
+	mode?: Mode;
 }
 
 export interface PrevalenceData {
