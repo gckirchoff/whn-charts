@@ -12,7 +12,7 @@
 		yProperty = 'adultPrevalence',
 		showRare,
 		allData,
-		mode
+		compareMode
 	}: DataChartProps = $props();
 
 	let chartWidth = $state(500);
@@ -24,7 +24,7 @@
 	console.log('rarityThreshold', rarityThreshold);
 
 	let usedData = $derived(
-		mode === 'compare to each other'
+		compareMode === 'to each other'
 			? data
 			: data.map((d) => ({ ...d, adultPrevalence: d.adultPrevalence / rarityThreshold }))
 	);
@@ -37,9 +37,9 @@
 	);
 
 	let yScale = $derived.by(() => {
-		const scale = mode === 'compare to each other' ? scaleLinear : scaleLog;
+		const scale = compareMode === 'to each other' ? scaleLinear : scaleLog;
 		const domain =
-			mode === 'compare to each other'
+			compareMode === 'to each other'
 				? (extent(usedData, (row) => +row[yProperty]) as [number, number])
 				: (extent(usedData, (row) => +row[yProperty]) as [number, number]);
 
@@ -131,7 +131,7 @@
 					</text>
 				{/key}
 			{/each}
-			{#if mode === 'compare to rare baseline'}
+			{#if compareMode === 'to rare baseline'}
 				<line x1={0} y1={yScale(1)} x2={chartWidth} y2={yScale(1)} stroke="red" stroke-width={2} />
 			{/if}
 		</g>

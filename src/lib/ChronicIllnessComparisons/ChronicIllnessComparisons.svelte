@@ -11,7 +11,7 @@
 	} from './constants';
 	import { isRare } from './logic';
 
-	let { src, mode = 'compare to each other' }: ChronicIlnessComparisonsProps = $props();
+	let { src, compareMode = 'to each other' }: ChronicIlnessComparisonsProps = $props();
 
 	let xProperty = $state<keyof PrevalenceData>('illness');
 	let yProperty = $state<keyof PrevalenceData>('adultPrevalence');
@@ -20,6 +20,7 @@
 	let allData = $derived(Array.from(new Set(data.map((d) => d.illness))));
 
 	let ratioed = $state(false);
+
 	let showRare = $state(true);
 
 	let ratio1 = $derived(options.find((o) => o.value === yProperty)?.label);
@@ -106,7 +107,7 @@
 </div>
 
 <div style="height: 700px">
-	<DataChart data={processedData} {xProperty} {yProperty} {showRare} {allData} {mode} />
+	<DataChart data={processedData} {xProperty} {yProperty} {showRare} {allData} {compareMode} />
 </div>
 
 <style>
