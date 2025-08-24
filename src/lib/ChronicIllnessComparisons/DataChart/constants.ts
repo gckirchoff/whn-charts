@@ -1,4 +1,4 @@
-import type { PrevalenceData } from '../constants';
+import type { CompareMode, PrevalenceData } from '../constants';
 
 export interface DataChartProps {
 	data: PrevalenceData[];
@@ -6,6 +6,7 @@ export interface DataChartProps {
 	yProperty?: keyof PrevalenceData;
 	showRare: boolean;
 	allData: string[];
+	compareMode: CompareMode;
 }
 
 export const margin = {
