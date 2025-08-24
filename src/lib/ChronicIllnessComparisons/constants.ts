@@ -1,4 +1,6 @@
-import type { RawCsv } from '$lib/constants';
+export type RawCsv<T> = {
+	[K in keyof T]: string;
+};
 
 export type CompareMode = 'to each other' | 'to rare baseline';
 
