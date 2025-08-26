@@ -151,8 +151,4 @@
 		border-bottom-right-radius: 20px;
 		border-bottom-left-radius: 20px;
 	}
-
-	path {
-		transition: all 500ms ease;
-	}
 </style>
