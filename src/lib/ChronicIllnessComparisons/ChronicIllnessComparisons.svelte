@@ -22,7 +22,7 @@
 
 	let ratioed = $state(false);
 
-	let showRare = $state(true);
+	let showRare = $derived(compareMode === 'to rare baseline');
 
 	let ratio1 = $derived(options.find((o) => o.value === yProperty)?.label);
 	let ratio2 = $derived(options.find((o) => o.value === ratioYProperty)?.label);
@@ -101,13 +101,6 @@
 					{/each}
 				</select>
 			{/if}
-		</div>
-		<div class="inputs rare">
-			<p>Show rare diseases:</p>
-			<div class="checkbox-wrapper-6">
-				<input class="tgl tgl-light" id="cb1-6" type="checkbox" bind:checked={showRare} />
-				<label class="tgl-btn" for="cb1-6"></label>
-			</div>
 		</div>
 	</div>
 {/if}
