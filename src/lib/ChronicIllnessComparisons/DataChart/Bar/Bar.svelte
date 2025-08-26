@@ -38,3 +38,9 @@
 </defs>
 
 <path d={path} fill={gradient ? `url(#gradient-${id})` : fill} {...rest} />
+
+<style>
+	path {
+		transition: all 500ms ease;
+	}
+</style>

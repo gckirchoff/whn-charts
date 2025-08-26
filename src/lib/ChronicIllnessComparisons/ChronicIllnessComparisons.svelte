@@ -136,12 +136,7 @@
 		font-family: Tahoma, Geneva, Verdana, sans-serif;
 		cursor: pointer;
 	}
-
-	.rare {
-		justify-content: center;
-		flex-direction: column;
-		gap: 0px;
-	}
+	
 
 	.checkbox-wrapper-6 .tgl {
 		display: none;
@@ -193,7 +188,7 @@
 	}
 
 	.checkbox-wrapper-6 .tgl-light + .tgl-btn {
-		background: #d8292a;
+		background: #cccccc;
 		border-radius: 2em;
 		padding: 2px;
 		transition: all 0.4s ease;
