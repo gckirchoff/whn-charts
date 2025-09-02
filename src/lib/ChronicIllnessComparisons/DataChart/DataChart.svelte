@@ -1,19 +1,10 @@
 <script lang="ts">
-	import {
-		schemeCategory10,
-		scaleOrdinal,
-		scaleBand,
-		scaleLinear,
-		scaleLog,
-		extent,
-		max
-	} from 'd3';
+	import { schemeCategory10, scaleOrdinal, scaleBand, scaleLinear, scaleLog, extent } from 'd3';
 
 	import type { DataChartProps } from './constants';
 	import { margin, rarityThreshold } from './constants';
 	import { fade } from 'svelte/transition';
 	import Bar from './Bar/Bar.svelte';
-	import { flip } from 'svelte/animate';
 
 	let {
 		data,
@@ -155,9 +146,5 @@
 	.main {
 		border-bottom-right-radius: 20px;
 		border-bottom-left-radius: 20px;
-	}
-
-	.bar-container {
-		transition: all 2000ms ease;
 	}
 </style>
