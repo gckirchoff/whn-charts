@@ -153,7 +153,6 @@
 	}
 
 	.main {
-		background-color: #f9f9f9;
 		border-bottom-right-radius: 20px;
 		border-bottom-left-radius: 20px;
 	}

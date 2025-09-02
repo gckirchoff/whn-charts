@@ -99,8 +99,8 @@
 	});
 </script>
 
-{#if compareMode === 'to each other'}
-	<div>
+<div class="menu">
+	<div class="inputs">
 		<label>
 			Long COVID prevalence
 			<select bind:value={longCovidPrevalenceSource}>
@@ -110,9 +110,7 @@
 			</select>
 			<a href={selectedLcOption.href}>source</a>
 		</label>
-	</div>
-	<div class="menu">
-		<div class="inputs">
+		{#if compareMode === 'to each other'}
 			<label>
 				<select bind:value={yProperty} onchange={handleYPropertyChange}>
 					{#each options as option}
@@ -120,8 +118,6 @@
 					{/each}
 				</select>
 			</label>
-		</div>
-		<div class="inputs">
 			<div class="checkbox-wrapper-6">
 				<input class="tgl tgl-light" id="cb1-7" type="checkbox" bind:checked={ratioed} />
 				<label class="tgl-btn" for="cb1-7"></label>
@@ -136,9 +132,9 @@
 					{/each}
 				</select>
 			{/if}
-		</div>
+		{/if}
 	</div>
-{/if}
+</div>
 
 {#if hasMounted}
 	<div style="height: 700px">
@@ -152,7 +148,6 @@
 		justify-content: space-between;
 		font-family: Tahoma, Geneva, Verdana, sans-serif;
 		padding: 10px;
-		background-color: #f9f9f9;
 		border-top-left-radius: 20px;
 		border-top-right-radius: 20px;
 		justify-content: space-around;
