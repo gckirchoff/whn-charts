@@ -4,6 +4,7 @@
 
 	import { csv } from 'd3-fetch';
 	import {
+		adultLcPrevalenceSourceOptions,
 		options,
 		type ChronicIlnessComparisonsProps,
 		type CsvPrevalenceData,
@@ -54,21 +55,6 @@
 			ratioYProperty = options[nextIndex].value as keyof PrevalenceData;
 		}
 	};
-
-	const adultLcPrevalenceSourceOptions = [
-		{
-			label: '5% (Al Ali et al)',
-			href: 'www.nih.gov/study/123543345',
-			value: 1,
-			adultPrevalence: 0.05
-		},
-		{
-			label: '15% (Statistics Canada)',
-			href: 'www.statcan.ca/article/12345',
-			value: 2,
-			adultPrevalence: 0.15
-		}
-	];
 
 	let longCovidPrevalenceSource = $state(1);
 
