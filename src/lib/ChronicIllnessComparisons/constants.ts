@@ -8,7 +8,6 @@ export interface ChronicIlnessComparisonsProps {
 	src: string;
 	compareMode?: CompareMode;
 }
-
 export interface PrevalenceData {
 	illness: string;
 	adultPrevalence: number;
