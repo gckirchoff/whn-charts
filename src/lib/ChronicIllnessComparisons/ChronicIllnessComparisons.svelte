@@ -167,12 +167,6 @@
 		cursor: pointer;
 	}
 
-	.rare {
-		justify-content: center;
-		flex-direction: column;
-		gap: 0px;
-	}
-
 	.checkbox-wrapper-6 .tgl {
 		display: none;
 	}
