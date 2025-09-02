@@ -13,6 +13,7 @@
 	import { margin, rarityThreshold } from './constants';
 	import { fade } from 'svelte/transition';
 	import Bar from './Bar/Bar.svelte';
+	import { flip } from 'svelte/animate';
 
 	let {
 		data,
@@ -55,6 +56,8 @@
 
 	let xTicks = $derived(xScale.domain());
 	let yTicks = $derived(compareMode === 'to each other' ? yScale.ticks() : [0.1, 1, 10, 100]);
+
+	let y0 = $derived(compareMode === 'to each other' ? innerChartHeight : yScale(1));
 </script>
 
 <div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight} class="main">
@@ -78,14 +81,12 @@
 			<!-- AxisY -->
 			<g>
 				{#each yTicks as tick}
-					<text x="-35px" y={yScale(tick)} font-family="Tahoma"
-						>{tick}{compareMode === 'to each other' ? '' : 'x'}</text
-					>
+					<text x="-35px" y={yScale(tick)} font-family="Tahoma">
+						{tick}{compareMode === 'to each other' ? '' : 'x'}
+					</text>
 				{/each}
 			</g>
-			{#each usedData as row, i (row[xProperty])}
-				{@const y = yScale(+row[yProperty])}
-				{@const y0 = compareMode === 'to each other' ? innerChartHeight : yScale(1)}
+			{#each usedData as row, i (row.illness)}
 				<Bar
 					x={xScale(String(row[xProperty])) ?? 0}
 					y={innerChartHeight}
@@ -94,6 +95,11 @@
 					fill="#cccccc40"
 					filter="drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.4))"
 				/>
+			{/each}
+
+			{#each usedData as row, i (row.illness)}
+				{@const y = yScale(+row[yProperty])}
+				{@const value = `${parseFloat((+row[yProperty]).toFixed(2))}${compareMode === 'to each other' ? '' : 'x'}`}
 				<Bar
 					x={xScale(String(row[xProperty])) ?? 0}
 					y={y0}
@@ -101,8 +107,8 @@
 					width={xScale.bandwidth()}
 					fill={colorScale(row.illness)}
 					gradient={true}
+					animate={true}
 				/>
-				{@const value = `${parseFloat((+row[yProperty]).toFixed(2))}${compareMode === 'to each other' ? '' : 'x'}`}
 				{#key `${showRare}-${value}`}
 					<text
 						in:fade={{ delay: 300 }}
@@ -152,7 +158,7 @@
 		border-bottom-left-radius: 20px;
 	}
 
-	path {
-		transition: all 500ms ease;
+	.bar-container {
+		transition: all 2000ms ease;
 	}
 </style>

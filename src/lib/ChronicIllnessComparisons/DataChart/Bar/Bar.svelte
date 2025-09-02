@@ -3,7 +3,16 @@
 	import { radius, fadeAmount } from './constants';
 	import { uid, LightenDarkenColor } from './logic';
 
-	let { x, y, width, height, fill, gradient = false, ...rest }: BarProps = $props();
+	let {
+		x,
+		y,
+		width,
+		height,
+		fill,
+		gradient = false,
+		animate = false,
+		...rest
+	}: BarProps = $props();
 
 	const id = uid();
 
@@ -37,4 +46,10 @@
 	</linearGradient>
 </defs>
 
-<path d={path} fill={gradient ? `url(#gradient-${id})` : fill} {...rest} />
+<path d={path} fill={gradient ? `url(#gradient-${id})` : fill} class:animate {...rest} />
+
+<style>
+	.animate {
+		transition: all 500ms ease;
+	}
+</style>

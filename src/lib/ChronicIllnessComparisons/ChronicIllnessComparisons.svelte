@@ -38,7 +38,7 @@
 				isPreventable: typedRow.isPreventable === 'TRUE'
 			};
 		});
-		data = csvData.sort((a, b) => (a.adultPrevalence > b.adultPrevalence ? 1 : -1));
+		data = csvData;
 		hasMounted = true;
 	});
 
@@ -55,14 +55,38 @@
 		}
 	};
 
-	let processedData = $derived.by(() => {
-		if (!ratioed || ratioYProperty === null) {
-			return data.filter(({ adultPrevalence }) => (showRare ? true : !isRare(adultPrevalence)));
+	const adultLcPrevalenceSourceOptions = [
+		{
+			label: '5% (Al Ali et al)',
+			href: 'www.nih.gov/study/123543345',
+			value: 1,
+			adultPrevalence: 0.05
+		},
+		{
+			label: '15% (Statistics Canada)',
+			href: 'www.statcan.ca/article/12345',
+			value: 2,
+			adultPrevalence: 0.15
 		}
+	];
 
+	let longCovidPrevalenceSource = $state(1);
+
+	let selectedLcOption = $derived(
+		adultLcPrevalenceSourceOptions.find(({ value }) => longCovidPrevalenceSource === value)!
+	);
+
+	let processedData = $derived.by(() => {
 		const adjustedData = data
 			.filter(({ adultPrevalence }) => (showRare ? true : !isRare(adultPrevalence)))
-			.map((row) => ({ ...row, adultPrevalence: row.adultPrevalence * 100 }));
+			.map((row) => {
+				const isLongCovidRow = row.illness === 'Long COVID';
+				const adultPrevalence = isLongCovidRow
+					? selectedLcOption.adultPrevalence
+					: row.adultPrevalence;
+				return { ...row, adultPrevalence };
+			})
+			.sort((a, b) => (a.adultPrevalence > b.adultPrevalence ? 1 : -1));
 
 		if (!ratioed || ratioYProperty === null) {
 			return adjustedData;
@@ -76,6 +100,17 @@
 </script>
 
 {#if compareMode === 'to each other'}
+	<div>
+		<label>
+			Long COVID prevalence
+			<select bind:value={longCovidPrevalenceSource}>
+				{#each adultLcPrevalenceSourceOptions as { value, label }}
+					<option {value}>{label}</option>
+				{/each}
+			</select>
+			<a href={selectedLcOption.href}>source</a>
+		</label>
+	</div>
 	<div class="menu">
 		<div class="inputs">
 			<label>
