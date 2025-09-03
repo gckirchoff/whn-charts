@@ -28,7 +28,11 @@
 
 	let xScale = $derived(
 		scaleBand()
-			.domain(data.map((row) => row[xProperty] as string))
+			.domain(
+				data
+					.sort((a, b) => (a.adultPrevalence > b.adultPrevalence ? 1 : -1))
+					.map((row) => row[xProperty] as string)
+			)
 			.range([0, innerChartWidth])
 			.padding(0.15)
 	);

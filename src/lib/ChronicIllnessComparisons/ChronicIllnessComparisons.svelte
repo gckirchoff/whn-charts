@@ -71,9 +71,7 @@
 					? selectedLcOption.adultPrevalence
 					: row.adultPrevalence;
 				return { ...row, adultPrevalence };
-			})
-			.sort((a, b) => (a.adultPrevalence > b.adultPrevalence ? 1 : -1));
-
+			});
 		if (!ratioed || ratioYProperty === null) {
 			return adjustedData;
 		}
