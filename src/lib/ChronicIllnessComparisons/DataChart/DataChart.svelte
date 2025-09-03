@@ -1,13 +1,5 @@
 <script lang="ts">
-	import {
-		schemeCategory10,
-		scaleOrdinal,
-		scaleBand,
-		scaleLinear,
-		scaleLog,
-		extent,
-		max
-	} from 'd3';
+	import { schemeCategory10, scaleOrdinal, scaleBand, scaleLinear, scaleLog, extent } from 'd3';
 
 	import type { DataChartProps } from './constants';
 	import { margin, rarityThreshold } from './constants';
@@ -36,7 +28,11 @@
 
 	let xScale = $derived(
 		scaleBand()
-			.domain(data.map((row) => row[xProperty] as string))
+			.domain(
+				data
+					.sort((a, b) => (a.adultPrevalence > b.adultPrevalence ? 1 : -1))
+					.map((row) => row[xProperty] as string)
+			)
 			.range([0, innerChartWidth])
 			.padding(0.15)
 	);
@@ -55,6 +51,8 @@
 
 	let xTicks = $derived(xScale.domain());
 	let yTicks = $derived(compareMode === 'to each other' ? yScale.ticks() : [0.1, 1, 10, 100]);
+
+	let y0 = $derived(compareMode === 'to each other' ? innerChartHeight : yScale(1));
 </script>
 
 <div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight} class="main">
@@ -63,11 +61,11 @@
 			<!-- AxisX -->
 			<g style="transform: translate(0, {innerChartHeight}px)">
 				<line x1="0" y1="0" x2={innerChartWidth} y2="0" />
-				{#each xTicks as tick}
+				{#each xTicks as tick (tick)}
 					<g
 						style="transform: translate({(xScale(tick) ?? 0) +
 							xScale.bandwidth() / 2 -
-							5}px, 0) rotate(35deg) translate(0, 20px);"
+							5}px, 0) rotate(35deg) translate(0, 20px); transition: all 500ms ease;"
 					>
 						<text text-anchor="start" font-family="Tahoma" font-size={xScale.bandwidth() / 4}>
 							{tick}
@@ -78,14 +76,12 @@
 			<!-- AxisY -->
 			<g>
 				{#each yTicks as tick}
-					<text x="-35px" y={yScale(tick)} font-family="Tahoma"
-						>{tick}{compareMode === 'to each other' ? '' : 'x'}</text
-					>
+					<text x="-35px" y={yScale(tick)} font-family="Tahoma">
+						{tick}{compareMode === 'to each other' ? '' : 'x'}
+					</text>
 				{/each}
 			</g>
-			{#each usedData as row, i (row[xProperty])}
-				{@const y = yScale(+row[yProperty])}
-				{@const y0 = compareMode === 'to each other' ? innerChartHeight : yScale(1)}
+			{#each usedData as row, i (row.illness)}
 				<Bar
 					x={xScale(String(row[xProperty])) ?? 0}
 					y={innerChartHeight}
@@ -94,6 +90,11 @@
 					fill="#cccccc40"
 					filter="drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.4))"
 				/>
+			{/each}
+
+			{#each usedData as row, i (row.illness)}
+				{@const y = yScale(+row[yProperty])}
+				{@const value = `${parseFloat((+row[yProperty]).toFixed(2))}${compareMode === 'to each other' ? '' : 'x'}`}
 				<Bar
 					x={xScale(String(row[xProperty])) ?? 0}
 					y={y0}
@@ -101,8 +102,8 @@
 					width={xScale.bandwidth()}
 					fill={colorScale(row.illness)}
 					gradient={true}
+					animate={true}
 				/>
-				{@const value = `${parseFloat((+row[yProperty]).toFixed(2))}${compareMode === 'to each other' ? '' : 'x'}`}
 				{#key `${showRare}-${value}`}
 					<text
 						in:fade={{ delay: 300 }}
@@ -147,7 +148,6 @@
 	}
 
 	.main {
-		background-color: #f9f9f9;
 		border-bottom-right-radius: 20px;
 		border-bottom-left-radius: 20px;
 	}
