@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { BarProps } from './constants';
-	import { radius, fadeAmount } from './constants';
+	import { fadeAmount } from './constants';
 	import { uid, LightenDarkenColor } from './logic';
 
 	let {
@@ -9,6 +9,7 @@
 		width,
 		height,
 		fill,
+		radius = 5,
 		gradient = false,
 		animate = false,
 		...rest
