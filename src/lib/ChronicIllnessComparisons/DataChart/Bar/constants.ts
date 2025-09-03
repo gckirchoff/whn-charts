@@ -5,8 +5,9 @@ export type BarProps = SVGAttributes<SVGPathElement> & {
 	y: number;
 	width: number;
 	height: number;
+	radius?: number;
 	gradient?: boolean;
+	animate?: boolean;
 };
 
-export const radius = 10;
 export const fadeAmount = 55;
