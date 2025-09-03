@@ -61,11 +61,11 @@
 			<!-- AxisX -->
 			<g style="transform: translate(0, {innerChartHeight}px)">
 				<line x1="0" y1="0" x2={innerChartWidth} y2="0" />
-				{#each xTicks as tick}
+				{#each xTicks as tick (tick)}
 					<g
 						style="transform: translate({(xScale(tick) ?? 0) +
 							xScale.bandwidth() / 2 -
-							5}px, 0) rotate(35deg) translate(0, 20px);"
+							5}px, 0) rotate(35deg) translate(0, 20px); transition: all 500ms ease;"
 					>
 						<text text-anchor="start" font-family="Tahoma" font-size={xScale.bandwidth() / 4}>
 							{tick}
