@@ -32,15 +32,27 @@ export const options = [
 
 export const adultLcPrevalenceSourceOptions = [
 	{
-		label: '5% (Al Ali et al)',
-		href: 'www.nih.gov/study/123543345',
+		label: '14% (YaleMedicine), 2024',
+		href: 'https://www.yalemedicine.org/news/long-covid-keeps-people-out-of-work-and-hurts-the-economy',
 		value: 1,
-		adultPrevalence: 0.05
+		adultPrevalence: 0.14
 	},
 	{
-		label: '15% (Statistics Canada)',
-		href: 'www.statcan.ca/article/12345',
+		label: '8% Cidrap UMN, 2024',
+		href: 'https://www.cidrap.umn.edu/covid-19/about-8-us-adults-have-ever-had-long-covid-survey-finds',
 		value: 2,
-		adultPrevalence: 0.15
+		adultPrevalence: 0.08
+	},
+	{
+		label: '14% (Plos One), 2023',
+		href: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10621843',
+		value: 3,
+		adultPrevalence: 0.14
+	},
+	{
+		label: '7% (CDC), 2025',
+		href: 'https://www.cdc.gov/long-covid/php/scientific-approach/index.html',
+		value: 4,
+		adultPrevalence: 0.07
 	}
 ];

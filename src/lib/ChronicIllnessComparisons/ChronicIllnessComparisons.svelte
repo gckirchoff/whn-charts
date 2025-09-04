@@ -92,7 +92,7 @@
 					<option {value}>{label}</option>
 				{/each}
 			</select>
-			<a href={selectedLcOption.href}>source</a>
+			<a href={selectedLcOption.href}>Source</a>
 		</label>
 		{#if compareMode === 'to each other'}
 			<label>
@@ -122,7 +122,7 @@
 
 {#if hasMounted}
 	<div style="height: 700px">
-		<DataChart data={processedData} {xProperty} {yProperty} {showRare} {allData} {compareMode} />
+		<DataChart data={processedData} {xProperty} {yProperty} {showRare} {allData} {compareMode} {ratioed} {ratioYProperty}/>
 	</div>
 {/if}
 

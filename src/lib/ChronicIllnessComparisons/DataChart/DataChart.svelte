@@ -5,6 +5,7 @@
 	import { margin, rarityThreshold } from './constants';
 	import { fade } from 'svelte/transition';
 	import Bar from './Bar/Bar.svelte';
+	import type { PrevalenceData } from '../constants';
 
 	let {
 		data,
@@ -12,7 +13,9 @@
 		yProperty = 'adultPrevalence',
 		showRare,
 		allData,
-		compareMode
+		compareMode,
+		ratioed,
+		ratioYProperty,
 	}: DataChartProps = $props();
 
 	let chartWidth = $state(500);
@@ -53,6 +56,21 @@
 	let yTicks = $derived(compareMode === 'to each other' ? yScale.ticks() : [0.1, 1, 10, 100]);
 
 	let y0 = $derived(compareMode === 'to each other' ? innerChartHeight : yScale(1));
+
+	const yLabelMap: Partial<Record<keyof PrevalenceData, string>> = {
+		adultPrevalence: "Adult Prevalence",
+		relativeSearchInterest: "Relative Search Interest"
+	}
+
+	let yLabel = $derived.by(() => {
+		if (compareMode === 'to rare baseline') {
+			return "Prevalence Compared to Rare Baseline"
+		}
+		if (ratioed) {
+			return `${yLabelMap[yProperty]} / ${yLabelMap[ratioYProperty]}`
+		}
+		return yLabelMap[yProperty]
+	})
 </script>
 
 <div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight} class="main">
@@ -67,20 +85,27 @@
 							xScale.bandwidth() / 2 -
 							5}px, 0) rotate(35deg) translate(0, 20px); transition: all 500ms ease;"
 					>
-						<text text-anchor="start" font-family="Tahoma" font-size={xScale.bandwidth() / 4}>
+						<text text-anchor="start" font-size={xScale.bandwidth() / 4}>
 							{tick}
 						</text>
 					</g>
 				{/each}
 			</g>
 			<!-- AxisY -->
+			<text
+				class="label"
+				style="transform: translate(-65px, {innerChartHeight / 2}px) rotate(-90deg)"
+				text-anchor="middle"
+				fill="black">{yLabel}</text
+			>
 			<g>
 				{#each yTicks as tick}
-					<text x="-35px" y={yScale(tick)} font-family="Tahoma">
+					<text x="-10px" y={yScale(tick)} class="tick" text-anchor="end">
 						{tick}{compareMode === 'to each other' ? '' : 'x'}
 					</text>
 				{/each}
 			</g>
+			<!-- chart -->
 			{#each usedData as row, i (row.illness)}
 				<Bar
 					x={xScale(String(row[xProperty])) ?? 0}
@@ -126,7 +151,6 @@
 					y={yScale(1) - 10}
 					font-size={xScale.bandwidth() / 4}
 					text-anchor="middle"
-					font-family="Tahoma"
 					fill="red">Rare Disease Threshold</text
 				>
 				<line
@@ -150,5 +174,17 @@
 	.main {
 		border-bottom-right-radius: 20px;
 		border-bottom-left-radius: 20px;
+	}
+
+	text {
+		font-family: Tahoma;
+	}
+
+	.label {
+		font-size: 16px;
+	}
+
+	.tick {
+		font-size: 14px;
 	}
 </style>
