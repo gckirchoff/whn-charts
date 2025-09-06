@@ -15,6 +15,7 @@ export interface PrevalenceData {
 	adultPrevalenceSource: string;
 	relativeSearchInterest: number;
 	isPreventable: boolean;
+	Funding: number;
 }
 
 export type CsvPrevalenceData = RawCsv<PrevalenceData>;
@@ -27,6 +28,10 @@ export const options = [
 	{
 		value: 'relativeSearchInterest',
 		label: 'Search Interest'
+	},
+	{
+		value: 'Funding', 
+		label: 'Funding'
 	}
 ];
 
