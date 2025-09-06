@@ -35,6 +35,7 @@
 				...typedRow,
 				adultPrevalence: Number(typedRow.adultPrevalence),
 				relativeSearchInterest: Number(typedRow.relativeSearchInterest),
+				Funding: (Number(typedRow.Funding) / 1000000),
 				isRareInAdults: typedRow.isRareInAdults === 'TRUE',
 				isPreventable: typedRow.isPreventable === 'TRUE'
 			};

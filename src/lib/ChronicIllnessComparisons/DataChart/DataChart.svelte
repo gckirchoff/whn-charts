@@ -59,7 +59,8 @@
 
 	const yLabelMap: Partial<Record<keyof PrevalenceData, string>> = {
 		adultPrevalence: "Adult Prevalence",
-		relativeSearchInterest: "Relative Search Interest"
+		relativeSearchInterest: "Relative Search Interest",
+		Funding: "Research Funding by Millions"
 	}
 
 	let yLabel = $derived.by(() => {
@@ -119,7 +120,7 @@
 
 			{#each usedData as row, i (row.illness)}
 				{@const y = yScale(+row[yProperty])}
-				{@const value = `${parseFloat((+row[yProperty]).toFixed(2))}${compareMode === 'to each other' ? '' : 'x'}`}
+				{@const value = yProperty === "adultPrevalence" && ratioYProperty === "Funding" ? `${+row[yProperty].toFixed(4)}` : `${parseFloat((+row[yProperty]).toFixed(2))}${compareMode === 'to each other' ? '' : 'x'}`}
 				<Bar
 					x={xScale(String(row[xProperty])) ?? 0}
 					y={y0}
