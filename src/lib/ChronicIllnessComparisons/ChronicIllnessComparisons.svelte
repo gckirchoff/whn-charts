@@ -4,6 +4,7 @@
 
 	import { csv } from 'd3-fetch';
 	import {
+		adultLcPrevalenceSourceOptions,
 		options,
 		type ChronicIlnessComparisonsProps,
 		type CsvPrevalenceData,
@@ -38,7 +39,7 @@
 				isPreventable: typedRow.isPreventable === 'TRUE'
 			};
 		});
-		data = csvData.sort((a, b) => (a.adultPrevalence > b.adultPrevalence ? 1 : -1));
+		data = csvData;
 		hasMounted = true;
 	});
 
@@ -55,15 +56,22 @@
 		}
 	};
 
-	let processedData = $derived.by(() => {
-		if (!ratioed || ratioYProperty === null) {
-			return data.filter(({ adultPrevalence }) => (showRare ? true : !isRare(adultPrevalence)));
-		}
+	let longCovidPrevalenceSource = $state(1);
 
+	let selectedLcOption = $derived(
+		adultLcPrevalenceSourceOptions.find(({ value }) => longCovidPrevalenceSource === value)!
+	);
+
+	let processedData = $derived.by(() => {
 		const adjustedData = data
 			.filter(({ adultPrevalence }) => (showRare ? true : !isRare(adultPrevalence)))
-			.map((row) => ({ ...row, adultPrevalence: row.adultPrevalence * 100 }));
-
+			.map((row) => {
+				const isLongCovidRow = row.illness === 'Long COVID';
+				const adultPrevalence = isLongCovidRow
+					? selectedLcOption.adultPrevalence
+					: row.adultPrevalence;
+				return { ...row, adultPrevalence };
+			});
 		if (!ratioed || ratioYProperty === null) {
 			return adjustedData;
 		}
@@ -75,9 +83,18 @@
 	});
 </script>
 
-{#if compareMode === 'to each other'}
-	<div class="menu">
-		<div class="inputs">
+<div class="menu">
+	<div class="inputs">
+		<label>
+			Long COVID prevalence
+			<select bind:value={longCovidPrevalenceSource}>
+				{#each adultLcPrevalenceSourceOptions as { value, label }}
+					<option {value}>{label}</option>
+				{/each}
+			</select>
+			<a href={selectedLcOption.href}>Source</a>
+		</label>
+		{#if compareMode === 'to each other'}
 			<label>
 				<select bind:value={yProperty} onchange={handleYPropertyChange}>
 					{#each options as option}
@@ -85,8 +102,6 @@
 					{/each}
 				</select>
 			</label>
-		</div>
-		<div class="inputs">
 			<div class="checkbox-wrapper-6">
 				<input class="tgl tgl-light" id="cb1-7" type="checkbox" bind:checked={ratioed} />
 				<label class="tgl-btn" for="cb1-7"></label>
@@ -101,13 +116,13 @@
 					{/each}
 				</select>
 			{/if}
-		</div>
+		{/if}
 	</div>
-{/if}
+</div>
 
 {#if hasMounted}
 	<div style="height: 700px">
-		<DataChart data={processedData} {xProperty} {yProperty} {showRare} {allData} {compareMode} />
+		<DataChart data={processedData} {xProperty} {yProperty} {showRare} {allData} {compareMode} {ratioed} {ratioYProperty}/>
 	</div>
 {/if}
 
@@ -117,7 +132,6 @@
 		justify-content: space-between;
 		font-family: Tahoma, Geneva, Verdana, sans-serif;
 		padding: 10px;
-		background-color: #f9f9f9;
 		border-top-left-radius: 20px;
 		border-top-right-radius: 20px;
 		justify-content: space-around;
@@ -136,7 +150,6 @@
 		font-family: Tahoma, Geneva, Verdana, sans-serif;
 		cursor: pointer;
 	}
-	
 
 	.checkbox-wrapper-6 .tgl {
 		display: none;

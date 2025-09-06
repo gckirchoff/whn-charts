@@ -7,12 +7,14 @@ export interface DataChartProps {
 	showRare: boolean;
 	allData: string[];
 	compareMode: CompareMode;
+	ratioed: boolean;
+	ratioYProperty: keyof PrevalenceData;
 }
 
 export const margin = {
 	top: 50,
 	bottom: 200,
-	left: 50,
+	left: 100,
 	right: 50
 };
 
