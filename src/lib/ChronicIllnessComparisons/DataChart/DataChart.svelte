@@ -120,7 +120,7 @@
 
 			{#each usedData as row, i (row.illness)}
 				{@const y = yScale(+row[yProperty])}
-				{@const value = yProperty === "adultPrevalence" && ratioYProperty === "Funding" ? `${+row[yProperty].toFixed(4)}` : `${parseFloat((+row[yProperty]).toFixed(2))}${compareMode === 'to each other' ? '' : 'x'}`}
+				{@const value = yProperty === "adultPrevalence" && ratioYProperty === "Funding" ? `${+row[yProperty].toFixed(4)}` : `${parseFloat((+row[yProperty]).toFixed(3))}${compareMode === 'to each other' ? '' : 'x'}`}
 				<Bar
 					x={xScale(String(row[xProperty])) ?? 0}
 					y={y0}
