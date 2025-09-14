@@ -21,7 +21,7 @@ export const margin = {
 export const yLabelMap: Partial<Record<keyof PrevalenceData, string>> = {
 	adultPrevalence: 'Adult Prevalence',
 	relativeSearchInterest: 'Relative Search Interest',
-	funding: 'Research Funding by Millions'
+	funding: 'Research Funding (millions)'
 };
 
 export const sourceMap: Partial<Record<keyof PrevalenceData, keyof PrevalenceData>> = {
