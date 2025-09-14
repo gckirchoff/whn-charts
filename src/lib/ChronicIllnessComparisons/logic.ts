@@ -8,8 +8,12 @@ export const roundTo = (num: number, precision: number) => {
 	return Math.round(num * factor) / factor;
 };
 
-export const formatNumber = (num: number) => {
-	const formattedNum = num > 1 ? format('.2s')(num).replace('G', 'B') : String(roundTo(num, 5));
+export const formatNumber = (num: number, base = 1) => {
+	const adjustedNum = num * base;
+	const formattedNum =
+		adjustedNum > 1
+			? format('.2s')(adjustedNum).replace('G', 'B')
+			: String(roundTo(adjustedNum, 5));
 	if (formattedNum === '0') {
 		return `~0`;
 	}
