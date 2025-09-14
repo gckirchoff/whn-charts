@@ -7,7 +7,7 @@
 	import { margin, rarityThreshold, yLabelMap } from './constants';
 	import Bar from './Bar/Bar.svelte';
 	import Tooltip, { HoveredData } from './Tooltip';
-	import { formatNumber } from '../logic';
+	import { clamp, formatNumber } from '../logic';
 
 	let {
 		data,
@@ -92,7 +92,7 @@
 					>
 						<text
 							text-anchor="start"
-							font-size={xScale.bandwidth() / 4}
+							font-size={clamp(xScale.bandwidth() / 4, 11, 18)}
 							onmouseenter={() =>
 								hoveredData.set(usedData.find((d) => d.illness === tick) as PrevalenceData)}
 							role="application"
@@ -148,13 +148,12 @@
 					<text
 						in:fade={{ delay: 300 }}
 						x={(xScale(String(row[xProperty])) ?? 0) + xScale.bandwidth() / 2}
-						y={y + (y <= y0 ? -10 : 10)}
+						y={y + (y <= y0 ? -10 : 13)}
 						text-anchor="middle"
 						dominant-baseline="middle"
-						font-weight="Bold"
 						font-family="Arial"
 						fill="black"
-						font-size={xScale.bandwidth() / 4.5}
+						font-size={clamp(xScale.bandwidth() / 4.5, 8, 18)}
 					>
 						{value}
 					</text>
