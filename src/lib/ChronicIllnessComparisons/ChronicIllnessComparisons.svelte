@@ -58,6 +58,19 @@
 		yProperty = selectedValue;
 	};
 
+	const handleRatioYPropertyChange = (
+		event: Event & {
+			currentTarget: EventTarget & HTMLSelectElement;
+		}
+	) => {
+		const selectedValue = event.currentTarget.value as keyof PrevalenceData;
+		const shouldFlipValues = selectedValue === yProperty;
+		if (shouldFlipValues) {
+			yProperty = ratioYProperty;
+		}
+		ratioYProperty = selectedValue;
+	};
+
 	let longCovidPrevalenceSource = $state(1);
 
 	let selectedLcOption = $derived(
@@ -115,7 +128,7 @@
 			</div>
 			<p>view as {ratioed ? 'ratio of ' + ratio1 + ' /' : ratio1 + ' / ' + ratio2 + ' ratio'}</p>
 			{#if ratioed}
-				<select bind:value={ratioYProperty}>
+				<select value={ratioYProperty} onchange={handleRatioYPropertyChange}>
 					{#each options as option}
 						<option value={option.value}>{option.label}</option>
 					{/each}
