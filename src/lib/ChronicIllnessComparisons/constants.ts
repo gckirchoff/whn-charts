@@ -18,6 +18,7 @@ export interface PrevalenceData {
 	funding: number;
 	fundingSource: string;
 	isPreventable: boolean;
+	ratioValue: number | null;
 }
 
 export type CsvPrevalenceData = RawCsv<PrevalenceData>;

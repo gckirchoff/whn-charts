@@ -37,7 +37,8 @@
 				relativeSearchInterest: Number(typedRow.relativeSearchInterest),
 				funding: Number(typedRow.funding) / 1000000,
 				isRareInAdults: typedRow.isRareInAdults === 'TRUE',
-				isPreventable: typedRow.isPreventable === 'TRUE'
+				isPreventable: typedRow.isPreventable === 'TRUE',
+				ratioValue: null
 			};
 		});
 		data = csvData;
@@ -76,7 +77,7 @@
 				const adultPrevalenceSource = isLongCovidRow
 					? selectedLcOption.href
 					: row.adultPrevalenceSource;
-				return { ...row, adultPrevalence, adultPrevalenceSource };
+				return { ...row, adultPrevalence, adultPrevalenceSource, ratioValue: null };
 			});
 		if (!ratioed || ratioYProperty === null) {
 			return adjustedData;
@@ -84,7 +85,7 @@
 
 		return adjustedData.map((row) => ({
 			...row,
-			[yProperty]: Number(row[yProperty]) / Number(row[ratioYProperty])
+			ratioValue: Number(row[yProperty]) / Number(row[ratioYProperty])
 		}));
 	});
 </script>

@@ -25,6 +25,8 @@
 	let innerChartWidth = $derived(chartWidth - margin.left - margin.right);
 	let innerChartHeight = $derived(chartHeight - margin.top - margin.bottom);
 
+	let usedYProperty = $derived<keyof PrevalenceData>(ratioed ? 'ratioValue' : yProperty);
+
 	let usedData = $derived(
 		compareMode === 'to each other'
 			? data
@@ -32,6 +34,8 @@
 	);
 
 	let hoveredData = new HoveredData();
+
+	$inspect(data.sort((a, b) => (a.adultPrevalence > b.adultPrevalence ? 1 : -1)));
 
 	let xScale = $derived(
 		scaleBand()
@@ -48,7 +52,7 @@
 		const scale = compareMode === 'to each other' ? scaleLinear : scaleLog;
 		const domain =
 			compareMode === 'to each other'
-				? (extent(usedData, (row) => +row[yProperty]) as [number, number])
+				? (extent(usedData, (row) => Number(row[usedYProperty])) as [number, number])
 				: ([0.075, 1000] as [number, number]);
 
 		return scale().domain(domain).range([innerChartHeight, 0]);
@@ -70,6 +74,8 @@
 		}
 		return yLabelMap[yProperty];
 	});
+
+	let textNumberFormatBase = $derived(yProperty === 'funding' && !ratioed ? 1_000_000 : 1);
 </script>
 
 <div
@@ -112,7 +118,7 @@
 			<g>
 				{#each yTicks as tick}
 					<text x="-10px" y={yScale(tick)} class="tick" text-anchor="end">
-						{tick}{compareMode === 'to each other' ? '' : 'x'}
+						{formatNumber(tick, textNumberFormatBase)}{compareMode === 'to each other' ? '' : 'x'}
 					</text>
 				{/each}
 			</g>
@@ -129,11 +135,7 @@
 			{/each}
 
 			{#each usedData as row, i (row.illness)}
-				{@const y = yScale(+row[yProperty])}
-				{@const value =
-					yProperty === 'adultPrevalence' && ratioYProperty === 'funding'
-						? `${formatNumber(+row[yProperty])}`
-						: `${formatNumber(+row[yProperty])}${compareMode === 'to each other' ? '' : 'x'}`}
+				{@const y = yScale(Number(row[usedYProperty]))}
 				<Bar
 					x={xScale(String(row[xProperty])) ?? 0}
 					y={y0}
@@ -144,7 +146,8 @@
 					gradient={true}
 					animate={true}
 				/>
-				{#key `${showRare}-${value}`}
+				{@const displayValue = `${formatNumber(Number(row[usedYProperty]), textNumberFormatBase)}${compareMode === 'to each other' ? '' : 'x'}`}
+				{#key `${showRare}-${displayValue}`}
 					<text
 						in:fade={{ delay: 300 }}
 						x={(xScale(String(row[xProperty])) ?? 0) + xScale.bandwidth() / 2}
@@ -155,7 +158,7 @@
 						fill="black"
 						font-size={clamp(xScale.bandwidth() / 4.5, 8, 18)}
 					>
-						{value}
+						{displayValue}
 					</text>
 				{/key}
 			{/each}
@@ -182,9 +185,11 @@
 		<Tooltip
 			data={hoveredData.current}
 			xAccessorScaled={(d) => xScale(d.illness) ?? 0}
-			yAccessorScaled={(d) => yScale(+d[yProperty]) ?? 0}
+			yAccessorScaled={(d) => yScale(Number(d[usedYProperty])) ?? 0}
 			width={innerChartWidth}
 			{yProperty}
+			{ratioYProperty}
+			{ratioed}
 		/>
 	{/if}
 </div>
