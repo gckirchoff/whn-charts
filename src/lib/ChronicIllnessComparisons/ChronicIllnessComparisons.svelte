@@ -35,7 +35,7 @@
 				...typedRow,
 				adultPrevalence: Number(typedRow.adultPrevalence),
 				relativeSearchInterest: Number(typedRow.relativeSearchInterest),
-				Funding: (Number(typedRow.Funding) / 1000000),
+				funding: Number(typedRow.funding) / 1000000,
 				isRareInAdults: typedRow.isRareInAdults === 'TRUE',
 				isPreventable: typedRow.isPreventable === 'TRUE'
 			};
@@ -71,7 +71,10 @@
 				const adultPrevalence = isLongCovidRow
 					? selectedLcOption.adultPrevalence
 					: row.adultPrevalence;
-				return { ...row, adultPrevalence };
+				const adultPrevalenceSource = isLongCovidRow
+					? selectedLcOption.href
+					: row.adultPrevalenceSource;
+				return { ...row, adultPrevalence, adultPrevalenceSource };
 			});
 		if (!ratioed || ratioYProperty === null) {
 			return adjustedData;
@@ -123,7 +126,16 @@
 
 {#if hasMounted}
 	<div style="height: 700px">
-		<DataChart data={processedData} {xProperty} {yProperty} {showRare} {allData} {compareMode} {ratioed} {ratioYProperty}/>
+		<DataChart
+			data={processedData}
+			{xProperty}
+			{yProperty}
+			{showRare}
+			{allData}
+			{compareMode}
+			{ratioed}
+			{ratioYProperty}
+		/>
 	</div>
 {/if}
 

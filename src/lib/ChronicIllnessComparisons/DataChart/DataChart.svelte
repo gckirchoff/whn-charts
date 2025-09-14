@@ -1,11 +1,13 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import { schemeCategory10, scaleOrdinal, scaleBand, scaleLinear, scaleLog, extent } from 'd3';
 
-	import type { DataChartProps } from './constants';
-	import { margin, rarityThreshold } from './constants';
-	import { fade } from 'svelte/transition';
-	import Bar from './Bar/Bar.svelte';
 	import type { PrevalenceData } from '../constants';
+	import type { DataChartProps } from './constants';
+	import { margin, rarityThreshold, yLabelMap } from './constants';
+	import Bar from './Bar/Bar.svelte';
+	import Tooltip, { HoveredData } from './Tooltip';
+	import { formatNumber } from '../logic';
 
 	let {
 		data,
@@ -15,7 +17,7 @@
 		allData,
 		compareMode,
 		ratioed,
-		ratioYProperty,
+		ratioYProperty
 	}: DataChartProps = $props();
 
 	let chartWidth = $state(500);
@@ -28,6 +30,8 @@
 			? data
 			: data.map((d) => ({ ...d, adultPrevalence: d.adultPrevalence / rarityThreshold }))
 	);
+
+	let hoveredData = new HoveredData();
 
 	let xScale = $derived(
 		scaleBand()
@@ -57,24 +61,24 @@
 
 	let y0 = $derived(compareMode === 'to each other' ? innerChartHeight : yScale(1));
 
-	const yLabelMap: Partial<Record<keyof PrevalenceData, string>> = {
-		adultPrevalence: "Adult Prevalence",
-		relativeSearchInterest: "Relative Search Interest",
-		Funding: "Research Funding by Millions"
-	}
-
 	let yLabel = $derived.by(() => {
 		if (compareMode === 'to rare baseline') {
-			return "Prevalence Compared to Rare Baseline"
+			return 'Prevalence Compared to Rare Baseline';
 		}
 		if (ratioed) {
-			return `${yLabelMap[yProperty]} / ${yLabelMap[ratioYProperty]}`
+			return `${yLabelMap[yProperty]} / ${yLabelMap[ratioYProperty]}`;
 		}
-		return yLabelMap[yProperty]
-	})
+		return yLabelMap[yProperty];
+	});
 </script>
 
-<div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight} class="main">
+<div
+	class="main"
+	onmouseleave={hoveredData.unset}
+	bind:clientWidth={chartWidth}
+	bind:clientHeight={chartHeight}
+	role="application"
+>
 	<svg width={chartWidth} height={chartHeight}>
 		<g style="transform: translate({margin.left}px, {margin.top}px)">
 			<!-- AxisX -->
@@ -86,7 +90,13 @@
 							xScale.bandwidth() / 2 -
 							5}px, 0) rotate(35deg) translate(0, 20px); transition: all 500ms ease;"
 					>
-						<text text-anchor="start" font-size={xScale.bandwidth() / 4}>
+						<text
+							text-anchor="start"
+							font-size={xScale.bandwidth() / 4}
+							onmouseenter={() =>
+								hoveredData.set(usedData.find((d) => d.illness === tick) as PrevalenceData)}
+							role="application"
+						>
 							{tick}
 						</text>
 					</g>
@@ -120,13 +130,17 @@
 
 			{#each usedData as row, i (row.illness)}
 				{@const y = yScale(+row[yProperty])}
-				{@const value = yProperty === "adultPrevalence" && ratioYProperty === "Funding" ? `${+row[yProperty].toFixed(4)}` : `${parseFloat((+row[yProperty]).toFixed(2))}${compareMode === 'to each other' ? '' : 'x'}`}
+				{@const value =
+					yProperty === 'adultPrevalence' && ratioYProperty === 'funding'
+						? `${formatNumber(+row[yProperty])}`
+						: `${formatNumber(+row[yProperty])}${compareMode === 'to each other' ? '' : 'x'}`}
 				<Bar
 					x={xScale(String(row[xProperty])) ?? 0}
 					y={y0}
 					height={compareMode === 'to each other' ? innerChartHeight - y : yScale(1) - y}
 					width={xScale.bandwidth()}
 					fill={colorScale(row.illness)}
+					onmouseenter={() => hoveredData.set(row)}
 					gradient={true}
 					animate={true}
 				/>
@@ -142,7 +156,7 @@
 						fill="black"
 						font-size={xScale.bandwidth() / 4.5}
 					>
-						{value}{row.adultPrevalence < rarityThreshold ? '*' : ''}
+						{value}
 					</text>
 				{/key}
 			{/each}
@@ -165,10 +179,20 @@
 			{/if}
 		</g>
 	</svg>
+	{#if hoveredData.current}
+		<Tooltip
+			data={hoveredData.current}
+			xAccessorScaled={(d) => xScale(d.illness) ?? 0}
+			yAccessorScaled={(d) => yScale(+d[yProperty]) ?? 0}
+			width={innerChartWidth}
+			{yProperty}
+		/>
+	{/if}
 </div>
 
 <style>
 	div {
+		position: relative;
 		height: 100%;
 	}
 
@@ -179,6 +203,8 @@
 
 	text {
 		font-family: Tahoma;
+		user-select: none;
+		cursor: default;
 	}
 
 	.label {
