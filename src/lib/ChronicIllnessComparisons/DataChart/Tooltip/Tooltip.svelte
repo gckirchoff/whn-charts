@@ -4,7 +4,15 @@
 	import { formatNumber, roundTo } from '$lib/ChronicIllnessComparisons/logic';
 	import { sourceMap, yLabelMap } from '../constants';
 
-	let { data, xAccessorScaled, yAccessorScaled, width, yProperty }: TooltipProps = $props();
+	let {
+		data,
+		xAccessorScaled,
+		yAccessorScaled,
+		width,
+		yProperty,
+		ratioYProperty,
+		ratioed
+	}: TooltipProps = $props();
 
 	const xNudge = 5;
 	const yNudge = 15;
@@ -38,9 +46,17 @@
 	<h4>
 		{yLabelMap[yProperty]}
 		<a href={source} target="_blank">
-			{formatNumber(+data[yProperty])}
+			{formatNumber(Number(data[yProperty]), yProperty === 'funding' ? 1_000_000 : 1)}
 		</a>
 	</h4>
+	{#if ratioed && ratioYProperty}
+		<h4>
+			{yLabelMap[ratioYProperty]}
+			<a href={source} target="_blank">
+				{formatNumber(Number(data[ratioYProperty]), ratioYProperty === 'funding' ? 1_000_000 : 1)}
+			</a>
+		</h4>
+	{/if}
 </div>
 
 <style>

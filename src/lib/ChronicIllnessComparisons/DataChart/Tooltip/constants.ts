@@ -6,4 +6,6 @@ export interface TooltipProps {
 	yAccessorScaled: (d: PrevalenceData) => number;
 	width: number;
 	yProperty: keyof PrevalenceData;
+	ratioYProperty: keyof PrevalenceData;
+	ratioed: boolean;
 }
