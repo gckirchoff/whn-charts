@@ -49,12 +49,12 @@
 			currentTarget: EventTarget & HTMLSelectElement;
 		}
 	) => {
-		const selectedValue = event.currentTarget.value;
-		if (selectedValue === ratioYProperty) {
-			const ratioYPropertyIndex = options.findIndex(({ value }) => value === ratioYProperty);
-			const nextIndex = (ratioYPropertyIndex + 1) % options.length;
-			ratioYProperty = options[nextIndex].value as keyof PrevalenceData;
+		const selectedValue = event.currentTarget.value as keyof PrevalenceData;
+		const shouldFlipValues = selectedValue === ratioYProperty;
+		if (shouldFlipValues) {
+			ratioYProperty = yProperty;
 		}
+		yProperty = selectedValue;
 	};
 
 	let longCovidPrevalenceSource = $state(1);
@@ -65,7 +65,9 @@
 
 	let processedData = $derived.by(() => {
 		const adjustedData = data
-			.filter(({ adultPrevalence }) => (showRare ? true : !isRare(adultPrevalence)))
+			.filter(({ adultPrevalence, illness }) =>
+				showRare ? true : !isRare(adultPrevalence) && illness !== 'Color Blindness'
+			)
 			.map((row) => {
 				const isLongCovidRow = row.illness === 'Long COVID';
 				const adultPrevalence = isLongCovidRow
@@ -100,7 +102,7 @@
 		</label>
 		{#if compareMode === 'to each other'}
 			<label>
-				<select bind:value={yProperty} onchange={handleYPropertyChange}>
+				<select value={yProperty} onchange={handleYPropertyChange}>
 					{#each options as option}
 						<option value={option.value}>{option.label}</option>
 					{/each}
@@ -114,9 +116,7 @@
 			{#if ratioed}
 				<select bind:value={ratioYProperty}>
 					{#each options as option}
-						<option value={option.value} disabled={option.value === yProperty}
-							>{option.label}</option
-						>
+						<option value={option.value}>{option.label}</option>
 					{/each}
 				</select>
 			{/if}
