@@ -14,8 +14,11 @@ export interface PrevalenceData {
 	isRareInAdults: boolean;
 	adultPrevalenceSource: string;
 	relativeSearchInterest: number;
+	relativeSearchInterestSource: string;
+	funding: number;
+	fundingSource: string;
 	isPreventable: boolean;
-	Funding: number;
+	ratioValue: number | null;
 }
 
 export type CsvPrevalenceData = RawCsv<PrevalenceData>;
@@ -30,34 +33,34 @@ export const options = [
 		label: 'Search Interest'
 	},
 	{
-		value: 'Funding', 
+		value: 'funding',
 		label: 'Funding'
 	}
 ];
 
 export const adultLcPrevalenceSourceOptions = [
 	{
-		label: '14% (YaleMedicine), 2024',
-		href: 'https://www.yalemedicine.org/news/long-covid-keeps-people-out-of-work-and-hurts-the-economy',
-		value: 1,
-		adultPrevalence: 0.14
+		label: '7% (CDC 2025)',
+		href: 'https://www.cdc.gov/long-covid/php/scientific-approach/index.html',
+		value: 4,
+		adultPrevalence: 0.07
 	},
 	{
-		label: '8% Cidrap UMN, 2024',
+		label: '8% (Cidrap UMN 2024)',
 		href: 'https://www.cidrap.umn.edu/covid-19/about-8-us-adults-have-ever-had-long-covid-survey-finds',
 		value: 2,
 		adultPrevalence: 0.08
 	},
 	{
-		label: '14% (Plos One), 2023',
-		href: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10621843',
-		value: 3,
+		label: '14% (Yale Medicine 2024)',
+		href: 'https://www.yalemedicine.org/news/long-covid-keeps-people-out-of-work-and-hurts-the-economy',
+		value: 1,
 		adultPrevalence: 0.14
-	},
-	{
-		label: '7% (CDC), 2025',
-		href: 'https://www.cdc.gov/long-covid/php/scientific-approach/index.html',
-		value: 4,
-		adultPrevalence: 0.07
 	}
+	// {
+	// 	label: '14% (Plos One), 2023',
+	// 	href: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10621843',
+	// 	value: 3,
+	// 	adultPrevalence: 0.14
+	// },
 ];

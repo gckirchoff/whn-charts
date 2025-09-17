@@ -35,9 +35,10 @@
 				...typedRow,
 				adultPrevalence: Number(typedRow.adultPrevalence),
 				relativeSearchInterest: Number(typedRow.relativeSearchInterest),
-				Funding: (Number(typedRow.Funding) / 1000000),
+				funding: Number(typedRow.funding) / 1000000,
 				isRareInAdults: typedRow.isRareInAdults === 'TRUE',
-				isPreventable: typedRow.isPreventable === 'TRUE'
+				isPreventable: typedRow.isPreventable === 'TRUE',
+				ratioValue: null
 			};
 		});
 		data = csvData;
@@ -49,12 +50,25 @@
 			currentTarget: EventTarget & HTMLSelectElement;
 		}
 	) => {
-		const selectedValue = event.currentTarget.value;
-		if (selectedValue === ratioYProperty) {
-			const ratioYPropertyIndex = options.findIndex(({ value }) => value === ratioYProperty);
-			const nextIndex = (ratioYPropertyIndex + 1) % options.length;
-			ratioYProperty = options[nextIndex].value as keyof PrevalenceData;
+		const selectedValue = event.currentTarget.value as keyof PrevalenceData;
+		const shouldFlipValues = selectedValue === ratioYProperty;
+		if (shouldFlipValues) {
+			ratioYProperty = yProperty;
 		}
+		yProperty = selectedValue;
+	};
+
+	const handleRatioYPropertyChange = (
+		event: Event & {
+			currentTarget: EventTarget & HTMLSelectElement;
+		}
+	) => {
+		const selectedValue = event.currentTarget.value as keyof PrevalenceData;
+		const shouldFlipValues = selectedValue === yProperty;
+		if (shouldFlipValues) {
+			yProperty = ratioYProperty;
+		}
+		ratioYProperty = selectedValue;
 	};
 
 	let longCovidPrevalenceSource = $state(1);
@@ -65,13 +79,18 @@
 
 	let processedData = $derived.by(() => {
 		const adjustedData = data
-			.filter(({ adultPrevalence }) => (showRare ? true : !isRare(adultPrevalence)))
+			.filter(({ adultPrevalence, illness }) =>
+				showRare ? true : !isRare(adultPrevalence) && illness !== 'Color Blindness'
+			)
 			.map((row) => {
 				const isLongCovidRow = row.illness === 'Long COVID';
 				const adultPrevalence = isLongCovidRow
 					? selectedLcOption.adultPrevalence
 					: row.adultPrevalence;
-				return { ...row, adultPrevalence };
+				const adultPrevalenceSource = isLongCovidRow
+					? selectedLcOption.href
+					: row.adultPrevalenceSource;
+				return { ...row, adultPrevalence, adultPrevalenceSource, ratioValue: null };
 			});
 		if (!ratioed || ratioYProperty === null) {
 			return adjustedData;
@@ -79,7 +98,7 @@
 
 		return adjustedData.map((row) => ({
 			...row,
-			[yProperty]: Number(row[yProperty]) / Number(row[ratioYProperty])
+			ratioValue: Number(row[yProperty]) / Number(row[ratioYProperty])
 		}));
 	});
 </script>
@@ -97,7 +116,7 @@
 		</label>
 		{#if compareMode === 'to each other'}
 			<label>
-				<select bind:value={yProperty} onchange={handleYPropertyChange}>
+				<select value={yProperty} onchange={handleYPropertyChange}>
 					{#each options as option}
 						<option value={option.value}>{option.label}</option>
 					{/each}
@@ -109,11 +128,9 @@
 			</div>
 			<p>view as {ratioed ? 'ratio of ' + ratio1 + ' /' : ratio1 + ' / ' + ratio2 + ' ratio'}</p>
 			{#if ratioed}
-				<select bind:value={ratioYProperty}>
+				<select value={ratioYProperty} onchange={handleRatioYPropertyChange}>
 					{#each options as option}
-						<option value={option.value} disabled={option.value === yProperty}
-							>{option.label}</option
-						>
+						<option value={option.value}>{option.label}</option>
 					{/each}
 				</select>
 			{/if}
@@ -123,7 +140,16 @@
 
 {#if hasMounted}
 	<div style="height: 700px">
-		<DataChart data={processedData} {xProperty} {yProperty} {showRare} {allData} {compareMode} {ratioed} {ratioYProperty}/>
+		<DataChart
+			data={processedData}
+			{xProperty}
+			{yProperty}
+			{showRare}
+			{allData}
+			{compareMode}
+			{ratioed}
+			{ratioYProperty}
+		/>
 	</div>
 {/if}
 

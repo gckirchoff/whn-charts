@@ -1,11 +1,13 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import { schemeCategory10, scaleOrdinal, scaleBand, scaleLinear, scaleLog, extent } from 'd3';
 
-	import type { DataChartProps } from './constants';
-	import { margin, rarityThreshold } from './constants';
-	import { fade } from 'svelte/transition';
-	import Bar from './Bar/Bar.svelte';
 	import type { PrevalenceData } from '../constants';
+	import type { DataChartProps } from './constants';
+	import { margin, rarityThreshold, yLabelMap } from './constants';
+	import Bar from './Bar/Bar.svelte';
+	import Tooltip, { HoveredData } from './Tooltip';
+	import { clamp, formatNumber } from '../logic';
 
 	let {
 		data,
@@ -15,7 +17,7 @@
 		allData,
 		compareMode,
 		ratioed,
-		ratioYProperty,
+		ratioYProperty
 	}: DataChartProps = $props();
 
 	let chartWidth = $state(500);
@@ -23,11 +25,17 @@
 	let innerChartWidth = $derived(chartWidth - margin.left - margin.right);
 	let innerChartHeight = $derived(chartHeight - margin.top - margin.bottom);
 
+	let usedYProperty = $derived<keyof PrevalenceData>(ratioed ? 'ratioValue' : yProperty);
+
 	let usedData = $derived(
 		compareMode === 'to each other'
 			? data
 			: data.map((d) => ({ ...d, adultPrevalence: d.adultPrevalence / rarityThreshold }))
 	);
+
+	let hoveredData = new HoveredData();
+
+	$inspect(data.sort((a, b) => (a.adultPrevalence > b.adultPrevalence ? 1 : -1)));
 
 	let xScale = $derived(
 		scaleBand()
@@ -44,7 +52,7 @@
 		const scale = compareMode === 'to each other' ? scaleLinear : scaleLog;
 		const domain =
 			compareMode === 'to each other'
-				? (extent(usedData, (row) => +row[yProperty]) as [number, number])
+				? (extent(usedData, (row) => Number(row[usedYProperty])) as [number, number])
 				: ([0.075, 1000] as [number, number]);
 
 		return scale().domain(domain).range([innerChartHeight, 0]);
@@ -57,24 +65,26 @@
 
 	let y0 = $derived(compareMode === 'to each other' ? innerChartHeight : yScale(1));
 
-	const yLabelMap: Partial<Record<keyof PrevalenceData, string>> = {
-		adultPrevalence: "Adult Prevalence",
-		relativeSearchInterest: "Relative Search Interest",
-		Funding: "Research Funding by Millions"
-	}
-
 	let yLabel = $derived.by(() => {
 		if (compareMode === 'to rare baseline') {
-			return "Prevalence Compared to Rare Baseline"
+			return 'Prevalence Compared to Rare Baseline';
 		}
 		if (ratioed) {
-			return `${yLabelMap[yProperty]} / ${yLabelMap[ratioYProperty]}`
+			return `${yLabelMap[yProperty]} / ${yLabelMap[ratioYProperty]}`;
 		}
-		return yLabelMap[yProperty]
-	})
+		return yLabelMap[yProperty];
+	});
+
+	let textNumberFormatBase = $derived(yProperty === 'funding' && !ratioed ? 1_000_000 : 1);
 </script>
 
-<div bind:clientWidth={chartWidth} bind:clientHeight={chartHeight} class="main">
+<div
+	class="main"
+	onmouseleave={hoveredData.unset}
+	bind:clientWidth={chartWidth}
+	bind:clientHeight={chartHeight}
+	role="application"
+>
 	<svg width={chartWidth} height={chartHeight}>
 		<g style="transform: translate({margin.left}px, {margin.top}px)">
 			<!-- AxisX -->
@@ -86,7 +96,13 @@
 							xScale.bandwidth() / 2 -
 							5}px, 0) rotate(35deg) translate(0, 20px); transition: all 500ms ease;"
 					>
-						<text text-anchor="start" font-size={xScale.bandwidth() / 4}>
+						<text
+							text-anchor="start"
+							font-size={clamp(xScale.bandwidth() / 4, 11, 18)}
+							onmouseenter={() =>
+								hoveredData.set(usedData.find((d) => d.illness === tick) as PrevalenceData)}
+							role="application"
+						>
 							{tick}
 						</text>
 					</g>
@@ -102,7 +118,7 @@
 			<g>
 				{#each yTicks as tick}
 					<text x="-10px" y={yScale(tick)} class="tick" text-anchor="end">
-						{tick}{compareMode === 'to each other' ? '' : 'x'}
+						{formatNumber(tick, textNumberFormatBase)}{compareMode === 'to each other' ? '' : 'x'}
 					</text>
 				{/each}
 			</g>
@@ -119,30 +135,30 @@
 			{/each}
 
 			{#each usedData as row, i (row.illness)}
-				{@const y = yScale(+row[yProperty])}
-				{@const value = yProperty === "adultPrevalence" && ratioYProperty === "Funding" ? `${+row[yProperty].toFixed(4)}` : `${parseFloat((+row[yProperty]).toFixed(2))}${compareMode === 'to each other' ? '' : 'x'}`}
+				{@const y = yScale(Number(row[usedYProperty]))}
 				<Bar
 					x={xScale(String(row[xProperty])) ?? 0}
 					y={y0}
 					height={compareMode === 'to each other' ? innerChartHeight - y : yScale(1) - y}
 					width={xScale.bandwidth()}
 					fill={colorScale(row.illness)}
+					onmouseenter={() => hoveredData.set(row)}
 					gradient={true}
 					animate={true}
 				/>
-				{#key `${showRare}-${value}`}
+				{@const displayValue = `${formatNumber(Number(row[usedYProperty]), textNumberFormatBase)}${compareMode === 'to each other' ? '' : 'x'}`}
+				{#key `${showRare}-${displayValue}`}
 					<text
 						in:fade={{ delay: 300 }}
 						x={(xScale(String(row[xProperty])) ?? 0) + xScale.bandwidth() / 2}
-						y={y + (y <= y0 ? -10 : 10)}
+						y={y + (y <= y0 ? -10 : 13)}
 						text-anchor="middle"
 						dominant-baseline="middle"
-						font-weight="Bold"
 						font-family="Arial"
 						fill="black"
-						font-size={xScale.bandwidth() / 4.5}
+						font-size={clamp(xScale.bandwidth() / 4.5, 8, 18)}
 					>
-						{value}{row.adultPrevalence < rarityThreshold ? '*' : ''}
+						{displayValue}
 					</text>
 				{/key}
 			{/each}
@@ -165,10 +181,22 @@
 			{/if}
 		</g>
 	</svg>
+	{#if hoveredData.current}
+		<Tooltip
+			data={hoveredData.current}
+			xAccessorScaled={(d) => xScale(d.illness) ?? 0}
+			yAccessorScaled={(d) => yScale(Number(d[usedYProperty])) ?? 0}
+			width={innerChartWidth}
+			{yProperty}
+			{ratioYProperty}
+			{ratioed}
+		/>
+	{/if}
 </div>
 
 <style>
 	div {
+		position: relative;
 		height: 100%;
 	}
 
@@ -179,6 +207,8 @@
 
 	text {
 		font-family: Tahoma;
+		user-select: none;
+		cursor: default;
 	}
 
 	.label {

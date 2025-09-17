@@ -18,6 +18,18 @@ export const margin = {
 	right: 50
 };
 
+export const yLabelMap: Partial<Record<keyof PrevalenceData, string>> = {
+	adultPrevalence: 'Adult Prevalence',
+	relativeSearchInterest: 'Relative Search Interest',
+	funding: 'Research Funding'
+};
+
+export const sourceMap: Partial<Record<keyof PrevalenceData, keyof PrevalenceData>> = {
+	adultPrevalence: 'adultPrevalenceSource',
+	relativeSearchInterest: 'relativeSearchInterestSource',
+	funding: 'fundingSource'
+};
+
 const rareIllnessUpperPopulationLimit = 200000;
 const americaPopulation = 340110988;
 export const rarityThreshold = rareIllnessUpperPopulationLimit / americaPopulation;
