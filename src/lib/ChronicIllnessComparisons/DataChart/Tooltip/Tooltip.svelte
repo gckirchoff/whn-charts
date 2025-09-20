@@ -33,6 +33,14 @@
 		}
 		return data[sourceProperty] as string;
 	});
+
+	let ratioSrouce = $derived.by(() => {
+		const sourceProperty = sourceMap[ratioYProperty];
+		if (!sourceProperty) {
+			return '';
+		}
+		return data[sourceProperty] as string;
+	});
 </script>
 
 <div
@@ -52,7 +60,7 @@
 	{#if ratioed && ratioYProperty}
 		<h4>
 			{yLabelMap[ratioYProperty]}
-			<a href={source} target="_blank">
+			<a href={ratioSrouce} target="_blank">
 				{formatNumber(Number(data[ratioYProperty]), ratioYProperty === 'funding' ? 1_000_000 : 1)}
 			</a>
 		</h4>
