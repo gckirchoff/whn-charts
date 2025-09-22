@@ -104,38 +104,45 @@
 </script>
 
 <div class="menu">
-	<div class="inputs">
-		<label>
-			Long COVID prevalence
-			<select bind:value={longCovidPrevalenceSource}>
-				{#each adultLcPrevalenceSourceOptions as { value, label }}
-					<option {value}>{label}</option>
+	<div class="control-section">
+		<h3>Long COVID Prevalence (<a href={selectedLcOption.href} target="_blank">src</a>)</h3>
+		<select bind:value={longCovidPrevalenceSource}>
+			{#each adultLcPrevalenceSourceOptions as { value, label }}
+				<option {value}>{label}</option>
+			{/each}
+		</select>
+	</div>
+
+	{#if compareMode === 'to each other'}
+		<div class="control-section">
+			<h3>Metric</h3>
+			<select value={yProperty} onchange={handleYPropertyChange}>
+				{#each options as option}
+					<option value={option.value}>{option.label}</option>
 				{/each}
 			</select>
-			<a href={selectedLcOption.href}>Source</a>
-		</label>
-		{#if compareMode === 'to each other'}
-			<label>
-				<select value={yProperty} onchange={handleYPropertyChange}>
+		</div>
+
+		<div class="control-section">
+			<h3>Display</h3>
+			<div class="ratio-wrapper">
+				<label class="toggle">
+					<input type="checkbox" bind:checked={ratioed} />
+					View as ratio
+					<span class="of-text" class:visible={ratioed}> of</span>
+				</label>
+				<select
+					value={ratioYProperty}
+					onchange={handleRatioYPropertyChange}
+					class:visible={ratioed}
+				>
 					{#each options as option}
 						<option value={option.value}>{option.label}</option>
 					{/each}
 				</select>
-			</label>
-			<div class="checkbox-wrapper-6">
-				<input class="tgl tgl-light" id="cb1-7" type="checkbox" bind:checked={ratioed} />
-				<label class="tgl-btn" for="cb1-7"></label>
 			</div>
-			<p>view as {ratioed ? 'ratio of ' + ratio1 + ' /' : ratio1 + ' / ' + ratio2 + ' ratio'}</p>
-			{#if ratioed}
-				<select value={ratioYProperty} onchange={handleRatioYPropertyChange}>
-					{#each options as option}
-						<option value={option.value}>{option.label}</option>
-					{/each}
-				</select>
-			{/if}
-		{/if}
-	</div>
+		</div>
+	{/if}
 </div>
 
 {#if hasMounted}
@@ -156,89 +163,59 @@
 <style>
 	.menu {
 		display: flex;
-		justify-content: space-between;
+		justify-content: center;
+		flex-wrap: wrap;
+		column-gap: 2rem;
+		border-radius: 12px;
 		font-family: Tahoma, Geneva, Verdana, sans-serif;
-		padding: 10px;
-		border-top-left-radius: 20px;
-		border-top-right-radius: 20px;
-		justify-content: space-around;
+		margin-bottom: 1rem;
 	}
 
-	.inputs {
+	.control-section h3 {
+		font-size: 0.9rem;
+		font-weight: 600;
+		margin-bottom: 0.5rem;
+	}
+
+	.control-section > select {
+		width: 100%;
+		min-width: 120px;
+		max-width: 100%;
+	}
+
+	.ratio-wrapper {
 		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
 		align-items: center;
-		font-family: Tahoma, Geneva, Verdana, sans-serif;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		min-height: 2rem;
+	}
+
+	.of-text,
+	.ratio-wrapper select {
+		visibility: hidden;
+	}
+
+	.visible,
+	select.visible {
+		visibility: visible;
+	}
+
+	label {
+		user-select: none;
+		cursor: pointer;
 	}
 
 	select {
-		font-size: 12pt;
-		font-family: Tahoma, Geneva, Verdana, sans-serif;
-		cursor: pointer;
+		padding: 0.4rem 0.6rem;
+		border-radius: 6px;
+		border: 1px solid #ccc;
+		font-size: 0.9rem;
+		min-width: 0;
 	}
 
-	.checkbox-wrapper-6 .tgl {
-		display: none;
-	}
-	.checkbox-wrapper-6 .tgl,
-	.checkbox-wrapper-6 .tgl:after,
-	.checkbox-wrapper-6 .tgl:before,
-	.checkbox-wrapper-6 .tgl + .tgl-btn {
-		box-sizing: border-box;
-	}
-	.checkbox-wrapper-6 .tgl::-moz-selection,
-	.checkbox-wrapper-6 .tgl:after::-moz-selection,
-	.checkbox-wrapper-6 .tgl:before::-moz-selection,
-	.checkbox-wrapper-6 .tgl + .tgl-btn::-moz-selection,
-	.checkbox-wrapper-6 .tgl::selection,
-	.checkbox-wrapper-6 .tgl:after::selection,
-	.checkbox-wrapper-6 .tgl:before::selection,
-	.checkbox-wrapper-6 .tgl + .tgl-btn::selection {
-		background: none;
-	}
-	.checkbox-wrapper-6 .tgl + .tgl-btn {
-		outline: 0;
-		display: block;
-		width: 2em;
-		height: 1em;
-		position: relative;
+	select,
+	input {
 		cursor: pointer;
-		-webkit-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-	}
-	.checkbox-wrapper-6 .tgl + .tgl-btn:after,
-	.checkbox-wrapper-6 .tgl + .tgl-btn:before {
-		position: relative;
-		display: block;
-		content: '';
-		width: 50%;
-		height: 100%;
-	}
-	.checkbox-wrapper-6 .tgl + .tgl-btn:after {
-		left: 0;
-	}
-	.checkbox-wrapper-6 .tgl + .tgl-btn:before {
-		display: none;
-	}
-	.checkbox-wrapper-6 .tgl:checked + .tgl-btn:after {
-		left: 50%;
-	}
-
-	.checkbox-wrapper-6 .tgl-light + .tgl-btn {
-		background: #cccccc;
-		border-radius: 2em;
-		padding: 2px;
-		transition: all 0.4s ease;
-	}
-	.checkbox-wrapper-6 .tgl-light + .tgl-btn:after {
-		border-radius: 50%;
-		background: #fff;
-		transition: all 0.2s ease;
-	}
-	.checkbox-wrapper-6 .tgl-light:checked + .tgl-btn {
-		background: #2da12d;
 	}
 </style>
