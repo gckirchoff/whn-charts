@@ -160,6 +160,16 @@
 					>
 						{displayValue}
 					</text>
+
+					<rect
+						x={xScale(String(row[xProperty])) ?? 0}
+						y={y + (y <= y0 ? -20 : 25)}
+						width={xScale.bandwidth()}
+						height={20}
+						fill="transparent"
+						onmouseenter={() => hoveredData.set(row)}
+						role="application"
+					/>
 				{/key}
 			{/each}
 			{#if compareMode === 'to rare baseline'}

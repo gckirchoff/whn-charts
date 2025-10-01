@@ -25,9 +25,6 @@
 
 	let showRare = $derived(compareMode === 'to rare baseline');
 
-	let ratio1 = $derived(options.find((o) => o.value === yProperty)?.label);
-	let ratio2 = $derived(options.find((o) => o.value === ratioYProperty)?.label);
-
 	onMount(async () => {
 		const csvData = await csv<PrevalenceData>(src, (row) => {
 			const typedRow = row as CsvPrevalenceData;
@@ -140,6 +137,34 @@
 						<option value={option.value}>{option.label}</option>
 					{/each}
 				</select>
+				<button
+					class="toggle-button"
+					class:visible={ratioed}
+					onclick={() => {
+						const temp = yProperty;
+						yProperty = ratioYProperty;
+						ratioYProperty = temp;
+					}}
+					title="Flip properties"
+					aria-label="Flip properties"
+					><svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="lucide lucide-refresh-ccw-icon lucide-refresh-ccw"
+						><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path
+							d="M3 3v5h5"
+						/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /><path
+							d="M16 16h5v5"
+						/></svg
+					></button
+				>
 			</div>
 		</div>
 	{/if}
@@ -191,17 +216,49 @@
 		min-height: 2rem;
 	}
 
+	.toggle-button svg {
+		--dimension: 20px;
+		width: var(--dimension);
+		height: var(--dimension);
+	}
+
+	.toggle-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 9999px;
+		border: 1px solid #e2e8f0;
+		background-color: transparent;
+		color: #374151;
+		--transition-base: 0.2s ease;
+		transition:
+			background-color var(--transition-base),
+			color var(--transition-base),
+			transform var(--transition-base);
+	}
+
+	.toggle-button:hover {
+		background-color: transparent;
+		color: #111827;
+		transform: scale(1.03);
+	}
+
 	.of-text,
-	.ratio-wrapper select {
+	.ratio-wrapper select,
+	.ratio-wrapper .toggle-button {
 		visibility: hidden;
 	}
 
 	.visible,
-	select.visible {
+	select.visible,
+	.toggle-button.visible {
 		visibility: visible;
 	}
 
-	label {
+	label,
+	button {
 		user-select: none;
 		cursor: pointer;
 	}
