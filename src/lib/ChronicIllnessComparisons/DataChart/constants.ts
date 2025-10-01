@@ -15,7 +15,7 @@ export const margin = {
 	top: 25,
 	bottom: 200,
 	left: 100,
-	right: 50
+	right: 10
 };
 
 export const yLabelMap: Partial<Record<keyof PrevalenceData, string>> = {
